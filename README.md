@@ -1,0 +1,2 @@
+# HangmanSolver
+AI for Hangman
