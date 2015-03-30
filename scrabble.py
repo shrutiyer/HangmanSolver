@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Feb 27 19:34:24 2014
-
-@author: pruvolo
+Iteration 1 of our scrabble solver
 """
 
 import pygame
@@ -11,7 +9,7 @@ import random
 import math
 import time
 
-class blockBreakerModel(object):
+class Model(object):
     """ Encodes the game state """
     def __init__(self):
         self.blocks = []
@@ -28,7 +26,7 @@ class blockBreakerModel(object):
         self.bag_contents = Bag()
 
     def update(self):
-        """ Update the game state (currently only tracking the paddle) """
+        """ Update the game state """
         pass
 
 class Block(object):
@@ -78,7 +76,7 @@ class PyGameWindowView(object):
         pygame.display.update()
     
 class PyGameController(object):
-    """ Handles keyboard input for block breaker """
+    """ Handles keyboard input"""
     def __init__(self,model):
         self.model = model
     
@@ -97,7 +95,7 @@ if __name__ == '__main__':
     size = (650,750)
     screen = pygame.display.set_mode(size)
 
-    model = blockBreakerModel()
+    model = Model()
     view = PyGameWindowView(model,screen)
 
     controller = PyGameController(model)
