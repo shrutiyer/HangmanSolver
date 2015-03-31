@@ -13,17 +13,21 @@ class Model(object):
     """ Encodes the game state """
     def __init__(self):
         self.blocks = []
+        # these are the blank blocks in the 15 by 15 game board
         for x in range(30,630,40):
             for y in range(30,630,40):
                 block = Block((255,255,204), 37,37,x,y)
                 self.blocks.append(block)
 
-        self.tiles = []
-        for x in range(190,470,40):
-            tile = Block((255,255,255), 37,37,x,670)
-            self.tiles.append(tile)
-
         self.bag_contents = Bag()
+        #This initializes a bag with the number of each letter in
+        # a game of scrabble
+
+        self.letter_tiles = Inventory()
+        print self.letter_tiles.letters_inhand
+        # All letters once picked from bag
+        # don't have to be on board yet
+
 
     def update(self):
         """ Update the game state """
@@ -54,6 +58,34 @@ class Bag(object):
                 bag_list.append(letter)
         return bag_list
 
+    def pickTile(self):
+        random_letter = random.choice(model.bag_contents.makeList)
+        self.contents[random_letter] -= 1
+        return random_letter
+
+class Inventory(object):
+    def __init__(self):
+        self.letters_inhand = []
+        self.pick_letters
+
+    def count_tiles(self):
+        return 7-len(self.letters_inhand)
+
+    def pick_letters(self):
+        for i in range(self.count_tiles):
+            self.letters_inhand.append(model.bag_contents.pickTile)
+
+
+class LetterTile(object):
+    def __init__(self, letter, points, img_location, height, width, x, y):
+        self.height = height
+        self.width = width
+        self.x = x
+        self.y = y
+        self.letter = letter
+        self.points = points
+        self.img = pygame.image.load(img_location)
+
 class PyGameWindowView(object):
     """ A view of brick breaker rendered in a Pygame window """
     def __init__(self,model,screen):
@@ -65,14 +97,16 @@ class PyGameWindowView(object):
     def draw(self):
         """ Draw the current game state to the screen """
         self.screen.fill(pygame.Color(0,0,0))
-        for block in self.model.blocks:
+        for block in self.model.blocks: 
+            #draw each of the blank blocks in the 15 by 15 game board
             pygame.draw.rect(self.screen,
                              pygame.Color(block.color[0],block.color[1],block.color[2]),
                              pygame.Rect(block.x,block.y,block.width,block.height))
-        for tile in self.model.tiles:
-            pygame.draw.rect(self.screen,
-                             pygame.Color(tile.color[0],tile.color[1],tile.color[2]),
-                             pygame.Rect(tile.x,tile.y,tile.width,tile.height))
+        for tile in self.model.letter_tiles.letters_inhand:
+            #draw each of the actual letters that are already placed on the board
+             pygame.draw.rect(self.screen,
+                              pygame.Color(tile.color[0],tile.color[1],tile.color[2]),
+                              pygame.Rect(tile.x,tile.y,tile.width,tile.height))
         pygame.display.update()
     
 class PyGameController(object):
@@ -101,8 +135,6 @@ if __name__ == '__main__':
     controller = PyGameController(model)
 
     running = True
-
-    print model.bag_contents.makeList()
 
     while running:
         for event in pygame.event.get():

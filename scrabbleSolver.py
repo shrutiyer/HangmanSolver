@@ -14,11 +14,11 @@ class Model(object):
     """ Encodes the game state """
     def __init__(self):
         self.blocks = []
-        for x in range(30,20,330):
-            for y in range(30,20,330):
+        for x in range(30,630,40):
+            for y in range(30,630,40):
                 block = Block((random.randint(0,255),
                                random.randint(0,255),
-                               random.randint(0,255)),15,15,x,y)
+                               random.randint(0,255)),40,40,x,y)
                 self.blocks.append(block)
 
     def update(self):
@@ -73,7 +73,7 @@ class PyGameController(object):
 if __name__ == '__main__':
     pygame.init()
 
-    size = (640,480)
+    size = (660,660)
     screen = pygame.display.set_mode(size)
 
     model = Model()
