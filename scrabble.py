@@ -14,17 +14,16 @@ class Model(object):
     def __init__(self):
         self.blocks = []
         # these are the blank blocks in the 15 by 15 game board
-        for x in range(30,630,40):
-            for y in range(30,630,40):
+        for x in range(0,600,40):
+            for y in range(0,600,40):
                 block = Block((255,255,204), 37,37,x,y)
                 self.blocks.append(block)
 
-        self.bag_contents = Bag()
+        self.bag_contents = Bag(self)
         #This initializes a bag with the number of each letter in
         # a game of scrabble
 
-        self.letter_tiles = Inventory()
-        print self.letter_tiles.letters_inhand
+        self.letter_tiles = Inventory(self)
         # All letters once picked from bag
         # don't have to be on board yet
 
@@ -43,7 +42,8 @@ class Block(object):
         self.y = y
 
 class Bag(object):
-    def __init__(self):
+    def __init__(self,model):
+        self.model = model
         self.contents = {'A':12,'B':2,'C':2, 'D':4, 
                         'E':12, 'F': 2, 'G':3, 'H':2, 
                         'I': 9,'J':1, 'K': 1, 'L': 4,
@@ -59,32 +59,36 @@ class Bag(object):
         return bag_list
 
     def pickTile(self):
-        random_letter = random.choice(model.bag_contents.makeList)
+        random_letter = random.choice(self.model.bag_contents.makeList())
         self.contents[random_letter] -= 1
         return random_letter
 
 class Inventory(object):
-    def __init__(self):
+    def __init__(self,model):
         self.letters_inhand = []
-        self.pick_letters
+        self.model = model
+        self.pick_letters(self.model)
 
-    def count_tiles(self):
+
+    def count_tiles(self,model):
         return 7-len(self.letters_inhand)
 
-    def pick_letters(self):
-        for i in range(self.count_tiles):
-            self.letters_inhand.append(model.bag_contents.pickTile)
-
+    def pick_letters(self,model):
+        for i in range(self.count_tiles(model)):
+            letter = self.model.bag_contents.pickTile()
+            self.letters_inhand.append(LetterTile(letter, letter + ".png", 37, 37, 20, 20))
 
 class LetterTile(object):
-    def __init__(self, letter, points, img_location, height, width, x, y):
+    def __init__(self, letter, img_location, height, width, x, y):
         self.height = height
         self.width = width
+        self.color = (255,255,240)
         self.x = x
         self.y = y
         self.letter = letter
-        self.points = points
-        self.img = pygame.image.load(img_location)
+        self.points = 0 #CHANGE THIS
+        self.image = pygame.image.load(img_location)
+        self.image_rect = self.image.get_rect()
 
 class PyGameWindowView(object):
     """ A view of brick breaker rendered in a Pygame window """
@@ -94,6 +98,10 @@ class PyGameWindowView(object):
         self.model = model
         self.screen = screen
         
+    def draw_tile(self,tile,x,y):
+        square = pygame.draw.rect(self.screen,pygame.Color(0,0,0),pygame.Rect(x,y,37,37))
+        self.screen.blit(tile.image,square)
+
     def draw(self):
         """ Draw the current game state to the screen """
         self.screen.fill(pygame.Color(0,0,0))
@@ -102,11 +110,11 @@ class PyGameWindowView(object):
             pygame.draw.rect(self.screen,
                              pygame.Color(block.color[0],block.color[1],block.color[2]),
                              pygame.Rect(block.x,block.y,block.width,block.height))
+        index = 0
         for tile in self.model.letter_tiles.letters_inhand:
             #draw each of the actual letters that are already placed on the board
-             pygame.draw.rect(self.screen,
-                              pygame.Color(tile.color[0],tile.color[1],tile.color[2]),
-                              pygame.Rect(tile.x,tile.y,tile.width,tile.height))
+            self.draw_tile(tile,160 + (index * 40),625)
+            index +=1
         pygame.display.update()
     
 class PyGameController(object):
@@ -118,15 +126,11 @@ class PyGameController(object):
         """ Look for left and right keypresses to modify the x velocity of the paddle """
         if event.type != KEYDOWN:
             return
-        if event.key == pygame.K_LEFT:
-            self.model.paddle.vx += -1.0
-        if event.key == pygame.K_RIGHT:
-            self.model.paddle.vx += 1.0
 
 if __name__ == '__main__':
     pygame.init()
 
-    size = (650,750)
+    size = (600,700)
     screen = pygame.display.set_mode(size)
 
     model = Model()
