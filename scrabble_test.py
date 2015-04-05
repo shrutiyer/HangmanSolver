@@ -18,7 +18,7 @@ class Model(object):
             for y in range(0,600,40):
                 block = Block((255,255,204), 37,37,x,y)
                 self.blocks.append(block)
-
+        print self.blocks
         self.bag_contents = Bag(self)
         #This initializes a bag with the number of each letter in
         # a game of scrabble
@@ -69,19 +69,14 @@ class Inventory(object):
         self.model = model
         self.pick_letters(self.model)
 
+
     def count_tiles(self,model):
         return 7-len(self.letters_inhand)
 
     def pick_letters(self,model):
         for i in range(self.count_tiles(model)):
             letter = self.model.bag_contents.pickTile()
-            self.letters_inhand.append(LetterTile(letter, letter + ".png", 37, 37, 20, 640))
-
-    def define_coordinates(self, model):
-        index = 0
-        for item in self.letters_inhand:
-            item.x = 160 + index*40
-            index += 1
+            self.letters_inhand.append(LetterTile(letter, letter + ".png", 37, 37, 20, 20))
 
 class LetterTile(object):
     def __init__(self, letter, img_location, height, width, x, y):
@@ -110,37 +105,33 @@ class PyGameWindowView(object):
     def draw(self):
         """ Draw the current game state to the screen """
         self.screen.fill(pygame.Color(0,0,0))
-        self.model.letter_tiles.define_coordinates(self.model)
-
-        if self.model.letter_chosen:
-            pygame.draw.rect(self.screen, (0,255,0), (self.model.letter_chosen.x-1, self.model.letter_chosen.y-1, 40, 40))
         for block in self.model.blocks: 
             #draw each of the blank blocks in the 15 by 15 game board
             pygame.draw.rect(self.screen,
                              pygame.Color(block.color[0],block.color[1],block.color[2]),
                              pygame.Rect(block.x,block.y,block.width,block.height))
-
+        index = 0
         for tile in self.model.letter_tiles.letters_inhand:
             #draw each of the actual letters that are already placed on the board
-            self.draw_tile(tile,tile.x, tile.y)
+            self.draw_tile(tile,160 + (index * 40),625)
+            index +=1
         pygame.display.update()
     
 class PyGameController(object):
     """ Handles keyboard input"""
     def __init__(self,model):
         self.model = model
-        self.model.letter_chosen = None
-
+    
     def handle_event(self,event):
         """ Look for left and right keypresses to modify the x velocity of the paddle """
+        pygame.event.get()
         if event.type != MOUSEBUTTONDOWN:
             return
         else:
-            if pygame.mouse.get_pressed()[0]: #left mouse button
-                self.model.letter_chosen = self.model.letter_tiles.letters_inhand[(pygame.mouse.get_pos()[0] -160)/40 ]
-            if pygame.mouse.get_pressed()[2]: #right mouse button
-                
-
+            if pygame.mouse.get_pressed():
+                #TODO: Check if it is an empty tile.Draw a rectangle around the tile
+                #Return the position of the destination and move the tile 
+    pass
 
 if __name__ == '__main__':
     pygame.init()
@@ -150,7 +141,6 @@ if __name__ == '__main__':
 
     model = Model()
     view = PyGameWindowView(model,screen)
-
     controller = PyGameController(model)
 
     running = True
