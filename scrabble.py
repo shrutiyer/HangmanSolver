@@ -8,6 +8,8 @@ from pygame.locals import *
 import random
 import math
 import time
+import numpy as np
+import copy
 
 class Model(object):
     """ Encodes the game state """
@@ -23,9 +25,11 @@ class Model(object):
         #This initializes a bag with the number of each letter in
         # a game of scrabble
 
-        self.letter_tiles = Inventory(self)
+        self.inventory = Inventory(self)
         # All letters once picked from bag
         # don't have to be on board yet
+
+        self.board = np.array([[None]*15]*15)
 
 
     def update(self):
@@ -110,19 +114,26 @@ class PyGameWindowView(object):
     def draw(self):
         """ Draw the current game state to the screen """
         self.screen.fill(pygame.Color(0,0,0))
-        self.model.letter_tiles.define_coordinates(self.model)
+        self.model.inventory.define_coordinates(self.model)
 
         if self.model.letter_chosen:
             pygame.draw.rect(self.screen, (0,255,0), (self.model.letter_chosen.x-1, self.model.letter_chosen.y-1, 40, 40))
+
         for block in self.model.blocks: 
             #draw each of the blank blocks in the 15 by 15 game board
             pygame.draw.rect(self.screen,
                              pygame.Color(block.color[0],block.color[1],block.color[2]),
                              pygame.Rect(block.x,block.y,block.width,block.height))
 
-        for tile in self.model.letter_tiles.letters_inhand:
-            #draw each of the actual letters that are already placed on the board
+        for tile in self.model.inventory.letters_inhand:
+            #draw each of the actual letters that are in hand
             self.draw_tile(tile,tile.x, tile.y)
+
+        for row in self.model.board:
+            for item in row:
+                if item:
+                    self.draw_tile(item, item.x, item.y)
+                    #print item.image
         pygame.display.update()
     
 class PyGameController(object):
@@ -137,10 +148,21 @@ class PyGameController(object):
             return
         else:
             if pygame.mouse.get_pressed()[0]: #left mouse button
-                self.model.letter_chosen = self.model.letter_tiles.letters_inhand[(pygame.mouse.get_pos()[0] -160)/40 ]
-            if pygame.mouse.get_pressed()[2]: #right mouse button
+                self.model.letter_chosen = self.model.inventory.letters_inhand[(pygame.mouse.get_pos()[0] -160)/40]
+                self.indexofletterchosen = int((pygame.mouse.get_pos()[0] -160)/40)
+            if pygame.mouse.get_pressed()[2] and self.model.letter_chosen: #right mouse button
+                # first copy letter chosen to position on board
+                self.model.letter_chosen.x = pygame.mouse.get_pos()[0]/40
+                self.model.letter_chosen.x *= 40
+                self.model.letter_chosen.y = pygame.mouse.get_pos()[1]/40
+                self.model.letter_chosen.y *= 40
+                model.board[(pygame.mouse.get_pos()[0])/40, (pygame.mouse.get_pos()[1])/40] = copy.copy(self.model.letter_chosen)
+                #next delete letter chosen from inventory
+                self.model.inventory.letters_inhand.pop(self.indexofletterchosen)
+            if pygame.mouse.get_pressed()[1]:
+                #move complete, refill inventory
+                self.model.inventory.pick_letters(self.model)
                 
-
 
 if __name__ == '__main__':
     pygame.init()
