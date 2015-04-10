@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-Iteration 1 of our scrabble solver
+Scrabble Solver
+Shruti Iyer, Paul Krussel, Meghan Tighe
+Soft Des Sp 2015
 """
 
 import pygame
@@ -14,6 +16,7 @@ import copy
 class Model(object):
     """ Encodes the game state """
     def __init__(self):
+        self.turn_number = 0
         self.blocks = []
         # these are the blank blocks in the 15 by 15 game board
         for x in range(0,600,40):
@@ -25,16 +28,29 @@ class Model(object):
         #This initializes a bag with the number of each letter in
         # a game of scrabble
 
-        self.inventory = Inventory(self)
-        # All letters once picked from bag
-        # don't have to be on board yet
-
         self.board = np.array([[None]*15]*15)
+
+        # Make the players
+        self.players = []
+        Shruti = Player(self, 'Shruti')
+        self.players.append(Shruti)
+        Meghan = Player(self,'Meghan')
+        self.players.append(Meghan)
+        self.current_player = self.players[0]
+
+        #Keeps track of point value for each letter
+        self.points = {'A':1,'B':3,'C':3, 'D':2, 
+                        'E':1, 'F': 4, 'G':2, 'H':4, 
+                        'I': 1,'J':8, 'K': 5, 'L': 1,
+                        'M':3, 'N':1, 'O':1, 'P':3,
+                        'Q':10, 'R':1, 'S':1, 'T':1,
+                        'U':1,'V':4, 'W':4, 'X':8,
+                        'Y':4,'Z':10}
 
 
     def update(self):
         """ Update the game state """
-        pass
+        self.current_player = self.players[self.turn_number%len(self.players)]
 
 class Block(object):
     """ Encodes the state of a block in the game """
@@ -44,6 +60,17 @@ class Block(object):
         self.width = width
         self.x = x
         self.y = y
+
+class Player(object):
+    def __init__(self,model,name):
+        self.model = model
+        self.inventory = Inventory(self.model)
+        self.name = name
+        self.score = 0
+
+    def update_score(self,letter):
+        self.score += self.model.points[letter]
+
 
 class Bag(object):
     def __init__(self,model):
@@ -61,6 +88,9 @@ class Bag(object):
             for i in range(self.contents[letter]):
                 bag_list.append(letter)
         return bag_list
+
+    def put_back(self,letter):
+        self.contents[letter] +=1
 
     def pickTile(self):
         random_letter = random.choice(self.model.bag_contents.makeList())
@@ -114,7 +144,7 @@ class PyGameWindowView(object):
     def draw(self):
         """ Draw the current game state to the screen """
         self.screen.fill(pygame.Color(0,0,0))
-        self.model.inventory.define_coordinates(self.model)
+        self.model.current_player.inventory.define_coordinates(self.model)
 
         if self.model.letter_chosen:
             pygame.draw.rect(self.screen, (0,255,0), (self.model.letter_chosen.x-1, self.model.letter_chosen.y-1, 40, 40))
@@ -125,7 +155,7 @@ class PyGameWindowView(object):
                              pygame.Color(block.color[0],block.color[1],block.color[2]),
                              pygame.Rect(block.x,block.y,block.width,block.height))
 
-        for tile in self.model.inventory.letters_inhand:
+        for tile in self.model.current_player.inventory.letters_inhand:
             #draw each of the actual letters that are in hand
             self.draw_tile(tile,tile.x, tile.y)
 
@@ -133,7 +163,12 @@ class PyGameWindowView(object):
             for item in row:
                 if item:
                     self.draw_tile(item, item.x, item.y)
-                    #print item.image
+
+        if pygame.font:
+            font = pygame.font.Font(None,26)
+            text = font.render(" Player %s's turn" % self.model.current_player.name, 1, (255,255,255))
+            textpos = text.get_rect(centerx=300,centery=620)
+            self.screen.blit(text,textpos)
         pygame.display.update()
     
 class PyGameController(object):
@@ -141,27 +176,44 @@ class PyGameController(object):
     def __init__(self,model):
         self.model = model
         self.model.letter_chosen = None
+        self.current_player = None
 
     def handle_event(self,event):
         """ Look for left and right keypresses to modify the x velocity of the paddle """
+
         if event.type != MOUSEBUTTONDOWN:
             return
         else:
             if pygame.mouse.get_pressed()[0]: #left mouse button
-                self.model.letter_chosen = self.model.inventory.letters_inhand[(pygame.mouse.get_pos()[0] -160)/40]
-                self.indexofletterchosen = int((pygame.mouse.get_pos()[0] -160)/40)
+                if pygame.mouse.get_pos()[1]> 640 and pygame.mouse.get_pos()[1] < 680:
+                    #only select if mouse if hovering on an inventory tile
+                    self.model.letter_chosen = self.model.current_player.inventory.letters_inhand[(pygame.mouse.get_pos()[0] -160)/40]
+                    self.indexofletterchosen = int((pygame.mouse.get_pos()[0] -160)/40)
+                else:
+                    print 'Left click to select a tile, right click to place on board'
             if pygame.mouse.get_pressed()[2] and self.model.letter_chosen: #right mouse button
-                # first copy letter chosen to position on board
-                self.model.letter_chosen.x = pygame.mouse.get_pos()[0]/40
-                self.model.letter_chosen.x *= 40
-                self.model.letter_chosen.y = pygame.mouse.get_pos()[1]/40
-                self.model.letter_chosen.y *= 40
-                model.board[(pygame.mouse.get_pos()[0])/40, (pygame.mouse.get_pos()[1])/40] = copy.copy(self.model.letter_chosen)
-                #next delete letter chosen from inventory
-                self.model.inventory.letters_inhand.pop(self.indexofletterchosen)
-            if pygame.mouse.get_pressed()[1]:
+                #check to see if place is already occupied
+                if self.model.board[(pygame.mouse.get_pos()[0])/40, (pygame.mouse.get_pos()[1])/40] == None:
+                    self.model.letter_chosen.x = pygame.mouse.get_pos()[0]/40
+                    self.model.letter_chosen.x *= 40
+                    self.model.letter_chosen.y = pygame.mouse.get_pos()[1]/40
+                    self.model.letter_chosen.y *= 40
+
+                    #copy the tile to the board
+                    self.model.board[(pygame.mouse.get_pos()[0])/40, (pygame.mouse.get_pos()[1])/40] = copy.copy(self.model.letter_chosen)
+                    
+                    #next delete letter chosen from inventory
+                    self.model.current_player.inventory.letters_inhand.pop(self.indexofletterchosen)
+                    self.model.letter_chosen = None #can't use same letter again
+            if pygame.mouse.get_pressed()[1]: #middle mouse click
                 #move complete, refill inventory
-                self.model.inventory.pick_letters(self.model)
+                if len(self.model.current_player.inventory.letters_inhand) == 7:
+                    #Give up turn, get new tiles
+                    for i in range(6):
+                        self.model.bag_contents.put_back(self.model.current_player.inventory.letters_inhand[i].letter)
+                    del self.model.current_player.inventory.letters_inhand[:]
+                self.model.current_player.inventory.pick_letters(self.model)
+                self.model.turn_number +=1
                 
 
 if __name__ == '__main__':
