@@ -28,7 +28,10 @@ class Model(object):
         #This initializes a bag with the number of each letter in
         # a game of scrabble
 
-        self.board = np.array([[None]*15]*15)
+        self.board = np.array([[None]*15]*15) #this is the real board
+        self.proposed_board = self.board.copy() #this is the board if the move being made is implemented
+        self.proposed_positions = []
+        self.proposed_word = ''
 
         # Make the players
         self.players = []
@@ -52,6 +55,60 @@ class Model(object):
         """ Update the game state """
         self.current_player = self.players[self.turn_number%len(self.players)]
 
+    def is_legal(self):
+        '''Returns true if move is legal'''
+        is_row = self.same_row()
+        if not(self.same_row() or self.same_column()):
+            return False
+
+        if is_row:
+            print 'being processed'
+            row_number = self.proposed_positions[0][1]/40
+            first_column = self.proposed_positions[0][0]/40
+            last_column = self.proposed_positions[0][0]/40
+
+            while first_column >= 0 and self.proposed_board[first_column,row_number] != None:
+                first_column -=1
+            while last_column <=14 and self.proposed_board[last_column,row_number] != None:
+                last_column +=1
+            for letter in self.proposed_board[first_column+1:last_column,row_number]:
+                self.proposed_word += letter.letter
+            return self.proposed_word
+        
+        else:
+            column_number = self.proposed_positions[0][0]/40
+            first_row = self.proposed_positions[0][1]/40
+            last_row = self.proposed_positions[0][1]/40
+            while first_row>=0 and self.proposed_board[column_number,first_row] != None:
+                first_row -=1
+            while last_row<=14 and self.proposed_board[column_number,last_row] != None:
+                last_row +=1
+            for letter in self.proposed_board[column_number,first_row+1:last_row]:
+                self.proposed_word += letter.letter
+            return self.proposed_word
+
+
+    def same_row(self):
+        '''Returns true if proposed positions are in same row'''
+        ref_y = self.proposed_positions[0][1]
+        for coordinate in self.proposed_positions:
+            if coordinate[1] != ref_y:
+                return False
+        return True
+
+    def same_column(self):
+        '''Returns true if proposed positions are in same column'''
+        ref_x = self.proposed_positions[0][0]
+        for coordinate in self.proposed_positions:
+            if coordinate[0] != ref_x:
+                return False
+        return True
+
+    def legal_spot(self):
+        '''Checks to see that words uses at least one tile already on board'''
+        pass
+
+
 class Block(object):
     """ Encodes the state of a block in the game """
     def __init__(self,color,height,width,x,y):
@@ -68,9 +125,10 @@ class Player(object):
         self.name = name
         self.score = 0
 
-    def update_score(self,letter):
-        self.score += self.model.points[letter]
-
+    def update_score(self,word):
+        print word
+        for letter in word:
+            self.score += self.model.points[letter]
 
 class Bag(object):
     def __init__(self,model):
@@ -102,6 +160,7 @@ class Inventory(object):
         self.letters_inhand = []
         self.model = model
         self.pick_letters(self.model)
+        self.placed_letters = []
 
     def count_tiles(self,model):
         return 7-len(self.letters_inhand)
@@ -116,6 +175,9 @@ class Inventory(object):
         for item in self.letters_inhand:
             item.x = 160 + index*40
             index += 1
+
+    def add_placed_tile(self,letter):
+        self.placed_letters.append(letter)
 
 class LetterTile(object):
     def __init__(self, letter, img_location, height, width, x, y):
@@ -159,7 +221,7 @@ class PyGameWindowView(object):
             #draw each of the actual letters that are in hand
             self.draw_tile(tile,tile.x, tile.y)
 
-        for row in self.model.board:
+        for row in self.model.proposed_board:
             for item in row:
                 if item:
                     self.draw_tile(item, item.x, item.y)
@@ -199,10 +261,12 @@ class PyGameController(object):
                     self.model.letter_chosen.y = pygame.mouse.get_pos()[1]/40
                     self.model.letter_chosen.y *= 40
 
+                    self.model.proposed_positions.append([self.model.letter_chosen.x,self.model.letter_chosen.y])
                     #copy the tile to the board
-                    self.model.board[(pygame.mouse.get_pos()[0])/40, (pygame.mouse.get_pos()[1])/40] = copy.copy(self.model.letter_chosen)
+                    self.model.proposed_board[(pygame.mouse.get_pos()[0])/40, (pygame.mouse.get_pos()[1])/40] = copy.copy(self.model.letter_chosen)
                     
                     #next delete letter chosen from inventory
+                    self.model.current_player.inventory.add_placed_tile(self.model.current_player.inventory.letters_inhand[self.indexofletterchosen])
                     self.model.current_player.inventory.letters_inhand.pop(self.indexofletterchosen)
                     self.model.letter_chosen = None #can't use same letter again
             if pygame.mouse.get_pressed()[1]: #middle mouse click
@@ -212,9 +276,18 @@ class PyGameController(object):
                     for i in range(6):
                         self.model.bag_contents.put_back(self.model.current_player.inventory.letters_inhand[i].letter)
                     del self.model.current_player.inventory.letters_inhand[:]
-                self.model.current_player.inventory.pick_letters(self.model)
-                self.model.turn_number +=1
-                
+                    self.model.current_player.inventory.pick_letters(self.model)
+                    self.model.turn_number +=1
+                else:
+                    word = self.model.is_legal()
+                    if word != False:
+                        del self.model.proposed_positions[:]
+                        self.model.current_player.update_score(word)
+                        print self.model.current_player.score
+                        self.model.proposed_word = ''
+                        self.model.current_player.inventory.pick_letters(self.model)
+                        self.model.turn_number +=1 #only do this if it's a legal move
+                        #If legal move: change board to proposed board, clear placed tiles list
 
 if __name__ == '__main__':
     pygame.init()
