@@ -113,7 +113,7 @@ class PyGameWindowView(object):
         index = 0
         for tile in self.model.letter_tiles.letters_inhand:
             #draw each of the actual letters that are already placed on the board
-            self.draw_tile(tile,160 + (index * 40),625)
+            self.draw_tile(tile,160 + (index * 40),640)
             index +=1
         pygame.display.update()
     
@@ -121,17 +121,20 @@ class PyGameController(object):
     """ Handles keyboard input"""
     def __init__(self,model):
         self.model = model
-    
+        self.letter_chosen = None
+
     def handle_event(self,event):
         """ Look for left and right keypresses to modify the x velocity of the paddle """
-        pygame.event.get()
+        
+        for event in pygame.event.get()
         if event.type != MOUSEBUTTONDOWN:
             return
         else:
-            if pygame.mouse.get_pressed():
-                #TODO: Check if it is an empty tile.Draw a rectangle around the tile
-                #Return the position of the destination and move the tile 
-    pass
+            if pygame.mouse.get_pressed()[0]: #left mouse button
+                #highlight the tile
+                self.mouse_position = (pygame.mouse_pos[0])
+                self.letter_chosen = 
+            if 
 
 if __name__ == '__main__':
     pygame.init()
