@@ -59,7 +59,16 @@ class PyGameController(object):
                         del self.model.proposed_positions[:]
                         self.model.current_player.update_score(word)
                         print self.model.current_player.score
-                        self.model.proposed_word = ''
-                        self.model.current_player.inventory.pick_letters(self.model)
-                        self.model.turn_number +=1 #only do this if it's a legal move
-                        #If legal move: change board to proposed board, clear placed tiles list
+                        if self.model.current_player.score == 0:
+                            self.model.current_player.inventory.letters_inhand.extend(self.model.current_player.inventory.placed_letters)
+                            self.model.proposed_board = self.model.board.copy()
+                        else:
+                            self.model.proposed_word = ''
+                            self.model.current_player.inventory.pick_letters(self.model)
+                            self.model.turn_number +=1 #only do this if it's a legal move
+                            self.model.board = self.model.proposed_board.copy()
+                    else:
+                        self.model.current_player.inventory.letters_inhand.extend(self.model.current_player.inventory.placed_letters)
+                        self.model.proposed_board = self.model.board.copy()
+                self.model.current_player.inventory.placed_letters = []
+

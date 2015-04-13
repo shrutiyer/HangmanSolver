@@ -1,3 +1,8 @@
+"""
+Shruti(4/13/15): I think the game is working fine. I added a list of english  and it checks 
+if the word is legal or not. I didn't spend a lot of time finding bugs. But, 
+the game looks almost complete
+"""
 import pygame
 from pygame.locals import *
 import random

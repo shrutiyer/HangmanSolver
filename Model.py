@@ -1,5 +1,5 @@
 """This is the model class along with the other smaller class
-THis is being imported to the main.py file
+This is being imported to the main.py file
 """
 import pygame
 from pygame.locals import *
@@ -58,30 +58,39 @@ class Model(object):
             return False
 
         if is_row:
-            print 'being processed'
             row_number = self.proposed_positions[0][1]/40
             first_column = self.proposed_positions[0][0]/40
-            last_column = self.proposed_positions[0][0]/40
+            last_column = self.proposed_positions[-1][0]/40
 
-            while first_column >= 0 and self.proposed_board[first_column,row_number] != None:
-                first_column -=1
-            while last_column <=14 and self.proposed_board[last_column,row_number] != None:
-                last_column +=1
-            for letter in self.proposed_board[first_column+1:last_column,row_number]:
-                self.proposed_word += letter.letter
-            return self.proposed_word
+            if self.legal_row_spot(first_column, last_column, row_number):
+                while first_column >= 0 and self.proposed_board[first_column,row_number] != None:
+                    first_column -=1
+                while last_column <=14 and self.proposed_board[last_column,row_number] != None:
+                    last_column +=1
+                first_column += 1
+                last_column -=1
+                for letter in self.proposed_board[first_column:last_column+1,row_number]:
+                    self.proposed_word += letter.letter
+                return self.proposed_word
+            else:
+                return False
         
         else:
             column_number = self.proposed_positions[0][0]/40
             first_row = self.proposed_positions[0][1]/40
-            last_row = self.proposed_positions[0][1]/40
-            while first_row>=0 and self.proposed_board[column_number,first_row] != None:
-                first_row -=1
-            while last_row<=14 and self.proposed_board[column_number,last_row] != None:
-                last_row +=1
-            for letter in self.proposed_board[column_number,first_row+1:last_row]:
-                self.proposed_word += letter.letter
-            return self.proposed_word
+            last_row = self.proposed_positions[-1][1]/40
+            if self.legal_column_spot(first_row, last_row, column_number):
+                while first_row>=0 and self.proposed_board[column_number,first_row] != None:
+                    first_row -=1
+                while last_row<=14 and self.proposed_board[column_number,last_row] != None:
+                    last_row +=1
+                first_row +=1
+                last_row -=1
+                for letter in self.proposed_board[column_number,first_row:last_row+1]:
+                    self.proposed_word += letter.letter
+                return self.proposed_word
+            else:
+                return False
 
 
     def same_row(self):
@@ -100,10 +109,19 @@ class Model(object):
                 return False
         return True
 
-    def legal_spot(self):
+    def legal_row_spot(self, first_column, last_column, row_number):
         '''Checks to see that words uses at least one tile already on board'''
-        pass
+        for spot in self.proposed_board[first_column:last_column, row_number]:
+            if spot == None:
+                return False
+        return True
 
+    def legal_column_spot(self, first_row, last_row, column_number):
+        '''Checks to see that words uses at least one tile already on board'''
+        for spot in self.proposed_board[column_number, first_row:last_row]:
+            if spot == None:
+                return False
+        return True
 
 class Block(object):
     """ Encodes the state of a block in the game """
@@ -123,8 +141,14 @@ class Player(object):
 
     def update_score(self,word):
         print word
-        for letter in word:
-            self.score += self.model.points[letter]
+        word_list = [line.strip() for line in open("words.txt", 'r')]
+        if word in word_list:
+            for letter in word:
+                self.score += self.model.points[letter]
+        # elif self.score == 0:
+        #     self.model.is_legal = False
+        #     print "is_legal is False"
+
 
 class Bag(object):
     def __init__(self,model):
@@ -170,6 +194,7 @@ class Inventory(object):
         index = 0
         for item in self.letters_inhand:
             item.x = 160 + index*40
+            item.y = 640
             index += 1
 
     def add_placed_tile(self,letter):
