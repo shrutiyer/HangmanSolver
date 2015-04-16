@@ -22,6 +22,7 @@ class PyGameController(object):
             return
         else:
             if pygame.mouse.get_pressed()[0]: #left mouse button
+            #if left click -> Select this tile from inventory
                 if pygame.mouse.get_pos()[1]> 640 and pygame.mouse.get_pos()[1] < 680:
                     #only select if mouse if hovering on an inventory tile
                     self.model.letter_chosen = self.model.current_player.inventory.letters_inhand[(pygame.mouse.get_pos()[0] -160)/40]
@@ -29,6 +30,7 @@ class PyGameController(object):
                 else:
                     print 'Left click to select a tile, right click to place on board'
             if pygame.mouse.get_pressed()[2] and self.model.letter_chosen: #right mouse button
+            #if right click -> place chosen tile on spot selected
                 #check to see if place is already occupied
                 if self.model.board[(pygame.mouse.get_pos()[0])/40, (pygame.mouse.get_pos()[1])/40] == None:
                     self.model.letter_chosen.x = pygame.mouse.get_pos()[0]/40
@@ -45,6 +47,7 @@ class PyGameController(object):
                     self.model.current_player.inventory.letters_inhand.pop(self.indexofletterchosen)
                     self.model.letter_chosen = None #can't use same letter again
             if pygame.mouse.get_pressed()[1]: #middle mouse click
+            #if middle click -> end move
                 #move complete, refill inventory
                 if len(self.model.current_player.inventory.letters_inhand) == 7:
                     #Give up turn, get new tiles
@@ -59,16 +62,14 @@ class PyGameController(object):
                         del self.model.proposed_positions[:]
                         self.model.current_player.update_score(word)
                         print self.model.current_player.score
-                        if self.model.current_player.score == 0:
-                            self.model.current_player.inventory.letters_inhand.extend(self.model.current_player.inventory.placed_letters)
-                            self.model.proposed_board = self.model.board.copy()
-                        else:
-                            self.model.proposed_word = ''
-                            self.model.current_player.inventory.pick_letters(self.model)
-                            self.model.turn_number +=1 #only do this if it's a legal move
-                            self.model.board = self.model.proposed_board.copy()
+                        self.model.current_player.inventory.pick_letters(self.model)
+                        self.model.turn_number +=1 
+                        self.model.board = self.model.proposed_board.copy()
                     else:
                         self.model.current_player.inventory.letters_inhand.extend(self.model.current_player.inventory.placed_letters)
                         self.model.proposed_board = self.model.board.copy()
+                    self.model.proposed_positions = []
+                    self.model.proposed_word = ''
+
                 self.model.current_player.inventory.placed_letters = []
 

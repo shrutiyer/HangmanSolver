@@ -10,7 +10,6 @@ import math
 import time
 import numpy as np
 import copy
-
 import Model
 import View
 import Control
@@ -23,7 +22,6 @@ screen = pygame.display.set_mode(size)
 
 model = Model.Model()
 view = View.PyGameWindowView(model,screen)
-
 controller = Control.PyGameController(model)
 
 running = True

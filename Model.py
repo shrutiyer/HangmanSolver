@@ -55,43 +55,64 @@ class Model(object):
         '''Returns true if move is legal'''
         is_row = self.same_row()
         if not(self.same_row() or self.same_column()):
+            print 'not same row or column'
+            return False
+        if is_row:
+            return self.do_row_stuff()
+        else:
+            return self.do_column_stuff()
+            
+    def do_column_stuff(self):
+        column_number = self.proposed_positions[0][0]/40
+        first_row = self.proposed_positions[0][1]/40
+        last_row = self.proposed_positions[-1][1]/40
+        if self.legal_column_spot(first_row, last_row, column_number):
+            while first_row>=0 and self.proposed_board[column_number,first_row] != None:
+                 first_row -=1
+            while last_row<=14 and self.proposed_board[column_number,last_row] != None:
+                last_row +=1
+            first_row +=1
+            last_row -=1
+            for letter in self.proposed_board[column_number,first_row:last_row+1]:
+                self.proposed_word += letter.letter
+            if self.is_real_word(self.proposed_word):
+                return self.proposed_word
+            else:
+                print self.proposed_word, 'is not a real word'
+                return False
+        else:
+                print 'illegal column spot'
+                return False
+    
+    def do_row_stuff(self):
+        row_number = self.proposed_positions[0][1]/40
+        first_column = self.proposed_positions[0][0]/40
+        last_column = self.proposed_positions[-1][0]/40
+
+        if self.legal_row_spot(first_column, last_column, row_number):
+            while first_column >= 0 and self.proposed_board[first_column,row_number] != None:
+                first_column -=1
+            while last_column <=14 and self.proposed_board[last_column,row_number] != None:
+                last_column +=1
+            first_column += 1
+            last_column -=1
+            for letter in self.proposed_board[first_column:last_column+1,row_number]:
+                self.proposed_word += letter.letter
+            if self.is_real_word(self.proposed_word) and self.legal_row_spot(first_column, last_column, row_number):
+                return self.proposed_word
+            elif not self.same_column():
+                print self.proposed_word, 'is not a real word'
+                return False
+            else:
+                self.proposed_word = ''
+                return self.do_column_stuff()
+        else:
+            print 'illegal row spot'
             return False
 
-        if is_row:
-            row_number = self.proposed_positions[0][1]/40
-            first_column = self.proposed_positions[0][0]/40
-            last_column = self.proposed_positions[-1][0]/40
-
-            if self.legal_row_spot(first_column, last_column, row_number):
-                while first_column >= 0 and self.proposed_board[first_column,row_number] != None:
-                    first_column -=1
-                while last_column <=14 and self.proposed_board[last_column,row_number] != None:
-                    last_column +=1
-                first_column += 1
-                last_column -=1
-                for letter in self.proposed_board[first_column:last_column+1,row_number]:
-                    self.proposed_word += letter.letter
-                return self.proposed_word
-            else:
-                return False
-        
-        else:
-            column_number = self.proposed_positions[0][0]/40
-            first_row = self.proposed_positions[0][1]/40
-            last_row = self.proposed_positions[-1][1]/40
-            if self.legal_column_spot(first_row, last_row, column_number):
-                while first_row>=0 and self.proposed_board[column_number,first_row] != None:
-                    first_row -=1
-                while last_row<=14 and self.proposed_board[column_number,last_row] != None:
-                    last_row +=1
-                first_row +=1
-                last_row -=1
-                for letter in self.proposed_board[column_number,first_row:last_row+1]:
-                    self.proposed_word += letter.letter
-                return self.proposed_word
-            else:
-                return False
-
+    def is_real_word(self,word):
+        word_list = [line.strip() for line in open("words.txt", 'r')]
+        return word.lower() in word_list
 
     def same_row(self):
         '''Returns true if proposed positions are in same row'''
@@ -140,14 +161,13 @@ class Player(object):
         self.score = 0
 
     def update_score(self,word):
-        print word
         word_list = [line.strip() for line in open("words.txt", 'r')]
-        if word in word_list:
+        print word
+        if word.lower() in word_list:
             for letter in word:
                 self.score += self.model.points[letter]
-        # elif self.score == 0:
-        #     self.model.is_legal = False
-        #     print "is_legal is False"
+        else:
+            print 'not in word list'
 
 
 class Bag(object):
