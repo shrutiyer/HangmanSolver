@@ -19,7 +19,32 @@ class PyGameController(object):
         """ Look for left and right keypresses to modify the x velocity of the paddle """
 
         if event.type != MOUSEBUTTONDOWN:
-            return
+            if event.type is pygame.KEYDOWN:
+                if event.key ==pygame.K_SPACE:
+                    #move complete, refill inventory
+                    if len(self.model.current_player.inventory.letters_inhand) == 7:
+                        #Give up turn, get new tiles
+                        for i in range(6):
+                            self.model.bag_contents.put_back(self.model.current_player.inventory.letters_inhand[i].letter)
+                        del self.model.current_player.inventory.letters_inhand[:]
+                        self.model.current_player.inventory.pick_letters(self.model)
+                        self.model.turn_number +=1
+                    else:
+                        word = self.model.is_legal()
+                        if word != False:
+                            del self.model.proposed_positions[:]
+                            self.model.current_player.update_score(word)
+                            print self.model.current_player.score
+                            self.model.current_player.inventory.pick_letters(self.model)
+                            self.model.turn_number +=1 
+                            self.model.board = self.model.proposed_board.copy()
+                        else:
+                            self.model.current_player.inventory.letters_inhand.extend(self.model.current_player.inventory.placed_letters)
+                            self.model.proposed_board = self.model.board.copy()
+                        self.model.proposed_positions = []
+                        self.model.proposed_word = ''
+
+                    self.model.current_player.inventory.placed_letters = []
         else:
             if pygame.mouse.get_pressed()[0]: #left mouse button
             #if left click -> Select this tile from inventory
@@ -46,30 +71,7 @@ class PyGameController(object):
                     self.model.current_player.inventory.add_placed_tile(self.model.current_player.inventory.letters_inhand[self.indexofletterchosen])
                     self.model.current_player.inventory.letters_inhand.pop(self.indexofletterchosen)
                     self.model.letter_chosen = None #can't use same letter again
-            if pygame.mouse.get_pressed()[1]: #middle mouse click
-            #if middle click -> end move
-                #move complete, refill inventory
-                if len(self.model.current_player.inventory.letters_inhand) == 7:
-                    #Give up turn, get new tiles
-                    for i in range(6):
-                        self.model.bag_contents.put_back(self.model.current_player.inventory.letters_inhand[i].letter)
-                    del self.model.current_player.inventory.letters_inhand[:]
-                    self.model.current_player.inventory.pick_letters(self.model)
-                    self.model.turn_number +=1
-                else:
-                    word = self.model.is_legal()
-                    if word != False:
-                        del self.model.proposed_positions[:]
-                        self.model.current_player.update_score(word)
-                        print self.model.current_player.score
-                        self.model.current_player.inventory.pick_letters(self.model)
-                        self.model.turn_number +=1 
-                        self.model.board = self.model.proposed_board.copy()
-                    else:
-                        self.model.current_player.inventory.letters_inhand.extend(self.model.current_player.inventory.placed_letters)
-                        self.model.proposed_board = self.model.board.copy()
-                    self.model.proposed_positions = []
-                    self.model.proposed_word = ''
 
                 self.model.current_player.inventory.placed_letters = []
+
 
