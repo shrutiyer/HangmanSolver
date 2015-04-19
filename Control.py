@@ -39,6 +39,7 @@ class PyGameController(object):
                             self.model.turn_number +=1 
                             self.model.board = self.model.proposed_board.copy()
                         else:
+
                             self.model.current_player.inventory.letters_inhand.extend(self.model.current_player.inventory.placed_letters)
                             self.model.proposed_board = self.model.board.copy()
                         self.model.proposed_positions = []
@@ -71,7 +72,3 @@ class PyGameController(object):
                     self.model.current_player.inventory.add_placed_tile(self.model.current_player.inventory.letters_inhand[self.indexofletterchosen])
                     self.model.current_player.inventory.letters_inhand.pop(self.indexofletterchosen)
                     self.model.letter_chosen = None #can't use same letter again
-
-                self.model.current_player.inventory.placed_letters = []
-
-

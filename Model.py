@@ -54,18 +54,57 @@ class Model(object):
     def is_legal(self):
         '''Returns true if move is legal'''
         is_row = self.same_row()
+        is_column = self.same_column()
         if not(self.same_row() or self.same_column()):
             print 'not same row or column'
             return False
+
+        if is_row and is_column:
+            if self.do_row_stuff():
+                is_good_word_length = 0
+                if self.turn_number != 0 and len(self.proposed_word) <= len(self.current_player.inventory.placed_letters):
+                    is_good_word_length += 1
+                row_word = self.proposed_word
+                if self.do_column_stuff():
+                    if self.turn_number != 0 and len(self.proposed_word) <= len(self.current_player.inventory.placed_letters):
+                        is_good_word_length += 1
+                    elif is_good_word_length < 2:
+                        column_word = self.proposed_word
+                        print "assigning the double word"
+                        self.proposed_word = row_word + column_word
+                        print "assigned it"
+                        return self.proposed_word
+                    else:
+                        return False
+                else:
+                    return False
+            else:
+                return False
+
         if is_row:
-            return self.do_row_stuff()
+            print "is_row"
+            if self.do_row_stuff():
+                if self.turn_number != 0 and len(self.proposed_word) <= len(self.current_player.inventory.placed_letters):
+                    return False
+                else:
+                    return self.proposed_word
+            else:
+                return False
         else:
-            return self.do_column_stuff()
+            print "is_column"
+            if self.do_column_stuff():
+                if self.turn_number != 0 and len(self.proposed_word) <= len(self.current_player.inventory.placed_letters):
+                    return False
+                else:
+                    return self.proposed_word
+            else:
+                return False
             
     def do_column_stuff(self):
         column_number = self.proposed_positions[0][0]/40
         first_row = self.proposed_positions[0][1]/40
         last_row = self.proposed_positions[-1][1]/40
+
         if self.legal_column_spot(first_row, last_row, column_number):
             while first_row>=0 and self.proposed_board[column_number,first_row] != None:
                  first_row -=1
@@ -103,9 +142,11 @@ class Model(object):
             elif not self.same_column():
                 print self.proposed_word, 'is not a real word'
                 return False
+            # else:
+            #     self.proposed_word = ''
+            #     return self.do_column_stuff()
             else:
-                self.proposed_word = ''
-                return self.do_column_stuff()
+                return False
         else:
             print 'illegal row spot'
             return False
