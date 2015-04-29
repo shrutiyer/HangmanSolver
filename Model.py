@@ -35,6 +35,8 @@ class Model(object):
         self.players.append(Shruti)
         Meghan = Player(self,'Meghan')
         self.players.append(Meghan)
+        Richard = Player(self, 'Richard')
+        self.players.append(Richard)
         self.current_player = self.players[0]
 
         #Keeps track of point value for each letter
@@ -185,6 +187,33 @@ class Model(object):
                 return False
         return True
 
+    ###### START OF AI STUFF ######
+    """Will have to work on accessing richard 
+    """
+    def find_spots(self):
+        '''Finds places on the board to put down words'''
+        Richard.open_spots = []
+        for x in range(0,14):
+            for y in range(0,14):
+                spot = self.board.item((x,y))
+                if spot != None:
+                    ai_check_row(x,y)
+                    ai_check_column(x,y)
+
+    def ai_check_row(self, x, y):
+        """Will check the row for None and then return a tuple of the letter(s) 
+        and the number of spaces available
+        """
+        pass
+
+    def ai_check_column(self, x, y):
+        pass
+
+"""Brain Dump by Shruti (Need not read): Could possibly do multiple letters, return 
+a list of words and then crosscheck it with the proposed board to avoid writing over 
+the existing board. For cross-checking, add the chosen spot to a list with Nones and 
+letters already on the board"""
+
 class Block(object):
     """ Encodes the state of a block in the game """
     def __init__(self,color,height,width,x,y):
@@ -210,6 +239,9 @@ class Player(object):
         else:
             print 'not in word list'
 
+class Artificial(object):
+    def __init__(self,model,name):
+        self.player = Player(model, name)
 
 class Bag(object):
     def __init__(self,model):
