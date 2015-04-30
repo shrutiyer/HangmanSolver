@@ -78,5 +78,6 @@ class PyGameController(object):
         elif self.model.current_player.name == 'Richard':
             if event.type == MOUSEBUTTONDOWN:
                 if pygame.mouse.get_pressed()[0]:
-                    #self.model.find_spots()
+                    print "recognized a left click"
+                    self.model.find_spots()
                     self.model.turn_number += 1

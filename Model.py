@@ -72,9 +72,7 @@ class Model(object):
                         is_good_word_length += 1
                     elif is_good_word_length < 2:
                         column_word = self.proposed_word
-                        print "assigning the double word"
                         self.proposed_word = row_word + column_word
-                        print "assigned it"
                         return self.proposed_word
                     else:
                         return False
@@ -187,24 +185,37 @@ class Model(object):
                 return False
         return True
 
-    ###### START OF AI STUFF ######
-    """Will have to work on accessing richard 
-    """
+    "###### START OF AI STUFF ######"
+
     def find_spots(self):
         '''Finds places on the board to put down words'''
-        Richard.open_spots = []
-        for x in range(0,14):
-            for y in range(0,14):
+        self.players[0].open_spots = []
+        for x in range(0,15):
+            for y in range(0,15):
                 spot = self.board.item((x,y))
+                print "Spot x and y is", x, y
                 if spot != None:
-                    ai_check_row(x,y)
-                    ai_check_column(x,y)
+                    self.players[0].open_spots.append([spot]) 
+                    print self.players[0].open_spots
+                    self.ai_check_row(x,y)
+                    # self.ai_check_column(x,y)
 
     def ai_check_row(self, x, y):
         """Will check the row for None and then return a tuple of the letter(s) 
         and the number of spaces available
+        left and right spots are number of open spots in both places
         """
-        pass
+        print "inside check row"
+        left_spots = 0
+        right_spots = 0
+        while -1<x<16 and -1<y<16:
+            if self.board.item((x-(left_spots+1),y)) == None:
+                left_spots += 1
+                print "left_spots",left_spots
+            if self.board.item((x+(right_spots+1),y)) == None:
+                right_spots += 1
+                print right_spots
+        self.players[0].open_spots[-1].append([left_spots,right_spots])
 
     def ai_check_column(self, x, y):
         pass
