@@ -16,10 +16,19 @@ class PyGameController(object):
         self.current_player = None
 
     def handle_event(self,event):
-        """ Look for left and right keypresses to modify the x velocity of the paddle
+        """
             Run the AI when necessary
         """
-        if self.model.current_player.name != 'Richard':
+        if self.model.current_player.name == 'Richard':
+            if event.type == MOUSEBUTTONDOWN:
+                if pygame.mouse.get_pressed()[0]:
+                    print "recognized a left click"
+                    self.model.find_spots()
+                    
+                    # Here's where we will actually put the word down.
+                    self.model.turn_number += 1
+                    print self.model.current_player.name + "'s score:", self.model.current_player.score
+        else:
             if event.type != MOUSEBUTTONDOWN:
                 if event.type is pygame.KEYDOWN:
                     if event.key ==pygame.K_SPACE:
@@ -36,7 +45,6 @@ class PyGameController(object):
                             if word != False:
                                 del self.model.proposed_positions[:]
                                 self.model.current_player.update_score(word)
-                                print self.model.current_player.score
                                 self.model.current_player.inventory.pick_letters(self.model)
                                 self.model.turn_number +=1 
                                 self.model.board = self.model.proposed_board.copy()
@@ -48,6 +56,7 @@ class PyGameController(object):
                             self.model.proposed_word = ''
 
                         self.model.current_player.inventory.placed_letters = []
+                        print self.model.current_player.name + "'s score:", self.model.current_player.score
             elif event.type == MOUSEBUTTONDOWN:
                 if pygame.mouse.get_pressed()[0]: #left mouse button
                 #if left click -> Select this tile from inventory
@@ -74,10 +83,3 @@ class PyGameController(object):
                         self.model.current_player.inventory.add_placed_tile(self.model.current_player.inventory.letters_inhand[self.indexofletterchosen])
                         self.model.current_player.inventory.letters_inhand.pop(self.indexofletterchosen)
                         self.model.letter_chosen = None #can't use same letter again
-            
-        elif self.model.current_player.name == 'Richard':
-            if event.type == MOUSEBUTTONDOWN:
-                if pygame.mouse.get_pressed()[0]:
-                    print "recognized a left click"
-                    self.model.find_spots()
-                    self.model.turn_number += 1

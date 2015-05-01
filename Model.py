@@ -33,8 +33,6 @@ class Model(object):
         self.players = []
         Shruti = Player(self, 'Shruti')
         self.players.append(Shruti)
-        Meghan = Player(self,'Meghan')
-        self.players.append(Meghan)
         Richard = Player(self, 'Richard')
         self.players.append(Richard)
         self.current_player = self.players[0]
@@ -197,10 +195,10 @@ class Model(object):
                     self.players[0].open_spots.append([spot.letter]) 
                     self.ai_check_row(x,y)
                     self.ai_check_column(x,y)
-                    print "spot x and y are ", x, y
+                    #print "spot x and y are ", x, y
                     if self.players[0].open_spots[-1][1] == [0,0] and self.players[0].open_spots[-1][2] == [0,0]:
                         del self.players[0].open_spots[-1]
-                    print self.players[0].open_spots
+                    #print self.players[0].open_spots
 
 
     def ai_check_row(self, x, y):
@@ -211,7 +209,7 @@ class Model(object):
         left_spots = 0
         right_spots = 0
         while -1<x-(left_spots+1):
-            print "in first while loop"
+            #print "in first while loop"
             if self.board.item((x-(left_spots+1),y)) == None:
                 left_spots += 1
                 if self.board.item((x-(left_spots),y-1)) != None or self.board.item((x-(left_spots),y+1)) != None:
@@ -223,7 +221,7 @@ class Model(object):
                 left_spots -= 1
                 break
         while x+(right_spots+1)<15:
-            print "in second while loop"
+            #print "in second while loop"
             if self.board.item((x+(right_spots+1),y)) == None:
                 right_spots += 1
                 if self.board.item((x+(right_spots),y-1)) != None or self.board.item((x+(right_spots),y+1)) != None:
@@ -240,7 +238,7 @@ class Model(object):
         up_spots = 0
         down_spots = 0
         while -1<y-(up_spots+1):
-            print "in first column while loop"
+            #print "in first column while loop"
             if self.board.item((x,y-(up_spots+1))) == None:
                 up_spots += 1
                 if self.board.item((x-1,y-(up_spots))) != None or self.board.item((x+1,y-(up_spots))) != None:
@@ -252,7 +250,7 @@ class Model(object):
                 up_spots -= 1
                 break
         while y+(down_spots+1)<15:
-            print "in second column while loop"
+            #print "in second column while loop"
             if self.board.item((x,y+(down_spots+1))) == None:
                 down_spots += 1
                 if self.board.item((x-1,y+(down_spots))) != None or self.board.item((x+1,y+(down_spots))) != None:
