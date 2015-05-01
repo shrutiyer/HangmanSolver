@@ -193,13 +193,13 @@ class Model(object):
         for x in range(0,15):
             for y in range(0,15):
                 spot = self.board.item((x,y))
-                print "Spot x and y is", x, y
                 if spot != None:
                     self.players[0].open_spots.append([spot.letter]) 
                     self.ai_check_row(x,y)
                     self.ai_check_column(x,y)
-                    # if self.players[0].open_spots[-1][1] == [0,0] and self.players[0].open_spots[-1][2] == [0,0]:
-                    #     del self.players[0].open_spots[-1]
+                    print "spot x and y are ", x, y
+                    if self.players[0].open_spots[-1][1] == [0,0] and self.players[0].open_spots[-1][2] == [0,0]:
+                        del self.players[0].open_spots[-1]
                     print self.players[0].open_spots
 
 
@@ -208,38 +208,60 @@ class Model(object):
         and the number of spaces available
         left and right spots are number of open spots in both places
         """
-        print "in ai_check_row"
         left_spots = 0
         right_spots = 0
-        while -1<x-(left_spots+1)<15:
+        while -1<x-(left_spots+1):
             print "in first while loop"
             if self.board.item((x-(left_spots+1),y)) == None:
                 left_spots += 1
-            if left_spots == 0:
+                if self.board.item((x-(left_spots),y-1)) != None or self.board.item((x-(left_spots),y+1)) != None:
+                    left_spots -= 1
+                    break               
+            elif left_spots == 0:
                 break
-        while -1<x+(right_spots+1)<15:
+            else:
+                left_spots -= 1
+                break
+        while x+(right_spots+1)<15:
             print "in second while loop"
             if self.board.item((x+(right_spots+1),y)) == None:
                 right_spots += 1
-            if right_spots == 0:
+                if self.board.item((x+(right_spots),y-1)) != None or self.board.item((x+(right_spots),y+1)) != None:
+                    right_spots -= 1
+                    break
+            elif right_spots == 0:
+                break
+            else:
+                right_spots -= 1
                 break
         self.players[0].open_spots[-1].append([left_spots,right_spots])
 
     def ai_check_column(self, x, y):
-        print "in check column"
         up_spots = 0
         down_spots = 0
-        while -1<y-(up_spots+1)<15:
+        while -1<y-(up_spots+1):
             print "in first column while loop"
             if self.board.item((x,y-(up_spots+1))) == None:
                 up_spots += 1
-            if up_spots == 0:
+                if self.board.item((x-1,y-(up_spots))) != None or self.board.item((x+1,y-(up_spots))) != None:
+                    up_spots -= 1
+                    break               
+            elif up_spots == 0:
                 break
-        while -1<y+(down_spots+1)<15:
+            else:
+                up_spots -= 1
+                break
+        while y+(down_spots+1)<15:
             print "in second column while loop"
             if self.board.item((x,y+(down_spots+1))) == None:
                 down_spots += 1
-            if down_spots == 0:
+                if self.board.item((x-1,y+(down_spots))) != None or self.board.item((x+1,y+(down_spots))) != None:
+                    down_spots -= 1
+                    break
+            elif down_spots == 0:
+                break
+            else:
+                down_spots -= 1
                 break
         self.players[0].open_spots[-1].append([up_spots,down_spots])
 
