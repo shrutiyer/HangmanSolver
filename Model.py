@@ -195,30 +195,53 @@ class Model(object):
                 spot = self.board.item((x,y))
                 print "Spot x and y is", x, y
                 if spot != None:
-                    self.players[0].open_spots.append([spot]) 
-                    print self.players[0].open_spots
+                    self.players[0].open_spots.append([spot.letter]) 
                     self.ai_check_row(x,y)
-                    # self.ai_check_column(x,y)
+                    self.ai_check_column(x,y)
+                    # if self.players[0].open_spots[-1][1] == [0,0] and self.players[0].open_spots[-1][2] == [0,0]:
+                    #     del self.players[0].open_spots[-1]
+                    print self.players[0].open_spots
+
 
     def ai_check_row(self, x, y):
         """Will check the row for None and then return a tuple of the letter(s) 
         and the number of spaces available
         left and right spots are number of open spots in both places
         """
-        print "inside check row"
+        print "in ai_check_row"
         left_spots = 0
         right_spots = 0
-        while -1<x<16 and -1<y<16:
+        while -1<x-(left_spots+1)<15:
+            print "in first while loop"
             if self.board.item((x-(left_spots+1),y)) == None:
                 left_spots += 1
-                print "left_spots",left_spots
+            if left_spots == 0:
+                break
+        while -1<x+(right_spots+1)<15:
+            print "in second while loop"
             if self.board.item((x+(right_spots+1),y)) == None:
                 right_spots += 1
-                print right_spots
+            if right_spots == 0:
+                break
         self.players[0].open_spots[-1].append([left_spots,right_spots])
 
     def ai_check_column(self, x, y):
-        pass
+        print "in check column"
+        up_spots = 0
+        down_spots = 0
+        while -1<y-(up_spots+1)<15:
+            print "in first column while loop"
+            if self.board.item((x,y-(up_spots+1))) == None:
+                up_spots += 1
+            if up_spots == 0:
+                break
+        while -1<y+(down_spots+1)<15:
+            print "in second column while loop"
+            if self.board.item((x,y+(down_spots+1))) == None:
+                down_spots += 1
+            if down_spots == 0:
+                break
+        self.players[0].open_spots[-1].append([up_spots,down_spots])
 
 """Brain Dump by Shruti (Need not read): Could possibly do multiple letters, return 
 a list of words and then crosscheck it with the proposed board to avoid writing over 
