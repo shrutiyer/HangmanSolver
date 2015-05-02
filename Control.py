@@ -7,6 +7,7 @@ import math
 import time
 import numpy as np
 import copy
+from tree import Tree, Node
 
 class PyGameController(object):
     """ Handles keyboard input"""

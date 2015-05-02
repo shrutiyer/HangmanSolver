@@ -92,16 +92,16 @@ def score_list(cleaned_list):
 	scores = []
 	for word in cleaned_list:
 		score=get_score(word)
-		scores.append(score)
+		scores.append((score,word))
 	return max(scores)
 
 def letter_loop(letterlist,inventory,locations):
 	"""loops through the list of possible letter-location combos"""
-	
 
-inventory = ['e','x','b','c','a','d','a']
+
+inventory = ['e','x','r','z','a','d','a']
 letter = ['a']
-location = (2,3)
+location = [2,3]
 
 def overall(letter,inventory,location):
 	wordlist = make_all_words(letter, inventory)
@@ -110,9 +110,25 @@ def overall(letter,inventory,location):
 	tuplist = split_list(letter,wordlist)
 	checked_list = check_list(letter, tuplist, location)
 	cleaned_list = clean_list(checked_list)
-	return score_list(cleaned_list)
+	highest_word = score_list(cleaned_list)
+	return highest_word
 
 print overall(letter,inventory,location)
+
+def parse_through_list(all_positions):
+	"""Give it the list within the list within a list"""
+	for each_position in all_positions:
+		row_spots = each_position[1]
+		column_spots = each_position[2]
+		if row_spots != [0,0]:
+			pass
+	pass
+
+def can_make_word(tile, inventory, word):
+	"""checks to see if you can make a word given your inventory"""
+	if 
+
+
 
 """ function to loop through all of them in all locations and see if 
 	they're legal then compute the max"""

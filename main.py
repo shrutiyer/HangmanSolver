@@ -8,6 +8,9 @@ import copy
 import Model
 import View
 import Control
+import pickle
+import aitree
+from tree import Tree,Node
 
 # if __name__ == '__main__':
 pygame.init()

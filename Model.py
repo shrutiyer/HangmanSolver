@@ -1,4 +1,4 @@
-"""This is the model class along with the other smaller class
+"""This is the model class along with  other smaller class
 This is being imported to the main.py file
 """
 import pygame
@@ -8,6 +8,7 @@ import math
 import time
 import numpy as np
 import copy
+from tree import Tree,Node
 
 class Model(object):
     """ Encodes the game state """
@@ -198,7 +199,7 @@ class Model(object):
                     #print "spot x and y are ", x, y
                     if self.players[0].open_spots[-1][1] == [0,0] and self.players[0].open_spots[-1][2] == [0,0]:
                         del self.players[0].open_spots[-1]
-                    #print self.players[0].open_spots
+                    print self.players[0].open_spots
 
 
     def ai_check_row(self, x, y):
@@ -232,7 +233,8 @@ class Model(object):
             else:
                 right_spots -= 1
                 break
-        self.players[0].open_spots[-1].append([left_spots,right_spots])
+        list_of_possible = self.players[0].open_spots[-1].append([left_spots,right_spots])
+
 
     def ai_check_column(self, x, y):
         up_spots = 0
