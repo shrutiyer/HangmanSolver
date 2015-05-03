@@ -9,6 +9,7 @@ import time
 import numpy as np
 import copy
 from tree import Tree,Node
+import aitree
 
 class Model(object):
     """ Encodes the game state """
@@ -47,6 +48,33 @@ class Model(object):
                         'U':1,'V':4, 'W':4, 'X':8,
                         'Y':4,'Z':10}
 
+    def make_AI_move(self,move_info):
+        """Given the move info (output from parse through), does the actual move making"""
+        score = move_info[0][0]
+        word = move_info[0][1]
+        direction = move_info[1]
+        letter_location = move_info[2]
+        x = letter_location[0]
+        y = letter_location[1]
+        pre = word[0]
+        the_letter = word[1]
+        post = word[2]
+        print 'pre', pre
+        print 'letter', the_letter 
+        print 'post', post
+
+        if direction == 'r': #if in a row
+            for (index, letter) in enumerate(post):
+                self.proposed_board[x+1+index,y] = LetterTile(letter, "letter_tiles/" + letter.upper() + ".png", 37, 37, (x+1+index)*40, y *40)
+            for (index, letter) in enumerate(pre):
+                self.proposed_board[x-len(pre)+index,y] = LetterTile(letter, "letter_tiles/" + letter.upper() + ".png", 37, 37, (x-len(pre)+index)*40, y *40)
+        else: # is in a column
+            for (index, letter) in enumerate(post):
+                self.proposed_board[x,y+1+index] = LetterTile(letter, "letter_tiles/" + letter.upper() + ".png", 37, 37, x*40, (y+1+index) *40)
+            for (index, letter) in enumerate(pre):
+                self.proposed_board[x,y-len(pre)+index] = LetterTile(letter, "letter_tiles/" + letter.upper() + ".png", 37, 37, x*40, (y-len(pre)+index) *40)
+        self.current_player.update_score(pre+the_letter+post)
+        #self.board[(pygame.mouse.get_pos()[0])/40, (pygame.mouse.get_pos()[1])/40] = copy.copy(self.model.letter_chosen)
 
     def update(self):
         """ Update the game state """
@@ -197,10 +225,11 @@ class Model(object):
                     self.ai_check_row(x,y)
                     self.ai_check_column(x,y)
                     #print "spot x and y are ", x, y
+                    self.players[0].open_spots[-1].append((x,y))
                     if self.players[0].open_spots[-1][1] == [0,0] and self.players[0].open_spots[-1][2] == [0,0]:
                         del self.players[0].open_spots[-1]
-                    print self.players[0].open_spots
-
+        print 'output of find_spots', self.players[0].open_spots
+        return self.players[0].open_spots
 
     def ai_check_row(self, x, y):
         """Will check the row for None and then return a tuple of the letter(s) 
@@ -209,7 +238,7 @@ class Model(object):
         """
         left_spots = 0
         right_spots = 0
-        while -1<x-(left_spots+1):
+        while -1<x-(left_spots+1)<15:
             #print "in first while loop"
             if self.board.item((x-(left_spots+1),y)) == None:
                 left_spots += 1
@@ -233,7 +262,7 @@ class Model(object):
             else:
                 right_spots -= 1
                 break
-        list_of_possible = self.players[0].open_spots[-1].append([left_spots,right_spots])
+        self.players[0].open_spots[-1].append([left_spots,right_spots])
 
 
     def ai_check_column(self, x, y):
@@ -291,7 +320,7 @@ class Player(object):
         print word
         if word.lower() in word_list:
             for letter in word:
-                self.score += self.model.points[letter]
+                self.score += self.model.points[letter.upper()]
         else:
             print 'not in word list'
 
@@ -329,6 +358,9 @@ class Inventory(object):
         self.letters_inhand = []
         self.model = model
         self.pick_letters(self.model)
+        self.string = []
+        for letter in self.letters_inhand:
+            self.string.append(letter.letter)
         self.placed_letters = []
 
     def count_tiles(self,model):

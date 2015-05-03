@@ -93,7 +93,7 @@ class Node(object):
 		# print 'type', type(self.children[0])
 		for c in self.children:
 			# print c, 'in for loop'
-			# print 'letters', letters
+			#print 'letters', letters
 			# print type(c.value)
 			# print 'value of c', c.value
 			# print ''

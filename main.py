@@ -5,12 +5,13 @@ import math
 import time
 import numpy as np
 import copy
-import Model
+from tree import Tree,Node
+import aitree
 import View
 import Control
 import pickle
-import aitree
-from tree import Tree,Node
+
+import Model
 
 # if __name__ == '__main__':
 pygame.init()

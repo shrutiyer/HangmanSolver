@@ -8,6 +8,7 @@ import time
 import numpy as np
 import copy
 from tree import Tree, Node
+import aitree
 
 class PyGameController(object):
     """ Handles keyboard input"""
@@ -21,14 +22,24 @@ class PyGameController(object):
             Run the AI when necessary
         """
         if self.model.current_player.name == 'Richard':
-            if event.type == MOUSEBUTTONDOWN:
-                if pygame.mouse.get_pressed()[0]:
-                    print "recognized a left click"
-                    self.model.find_spots()
-                    
-                    # Here's where we will actually put the word down.
-                    self.model.turn_number += 1
-                    print self.model.current_player.name + "'s score:", self.model.current_player.score
+            #if event.type == MOUSEBUTTONDOWN:
+                #if pygame.mouse.get_pressed()[0]:
+            print "recognized a left click"
+            spots = self.model.find_spots()
+            move = aitree.parse_through_list(spots,self.model.current_player.inventory.string)
+            if move:
+                print 'move info', move
+                self.model.make_AI_move(move)
+                # # Here's where we will actually put the word down.
+                self.model.current_player.inventory.pick_letters(self.model)
+                self.model.board = self.model.proposed_board.copy()
+            else:
+                for i in range(6):
+                    self.model.bag_contents.put_back(self.model.current_player.inventory.letters_inhand[i].letter)
+                del self.model.current_player.inventory.letters_inhand[:]
+                self.model.current_player.inventory.pick_letters(self.model)
+            self.model.turn_number += 1
+            print self.model.current_player.name + "'s score:", self.model.current_player.score
         else:
             if event.type != MOUSEBUTTONDOWN:
                 if event.type is pygame.KEYDOWN:
