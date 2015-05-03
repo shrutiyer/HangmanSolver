@@ -94,7 +94,7 @@ def score_list(cleaned_list):
 	for word in cleaned_list:
 		score=get_score(word)
 		scores.append((score,word))
-	print 'scores', scores
+	#print 'scores', scores
 	if scores:
 		return max(scores)
 	else:
@@ -142,10 +142,12 @@ def parse_through_list(all_positions,inventory):
 		location = each_position[3]
 		if row_spots != [0,0]:
 			#print "row spots", row_spots
-			list_of_possible_words.append([overall(letter,inventory,row_spots),'r',location])
+			if overall(letter,inventory,row_spots):
+				list_of_possible_words.append([overall(letter,inventory,row_spots),'r',location])
 		if column_spots != [0,0]:
 			#print "column_spots", column_spots
-			list_of_possible_words.append([overall(letter,inventory,column_spots),'c',location])
+			if overall(letter,inventory,column_spots):
+				list_of_possible_words.append([overall(letter,inventory,column_spots),'c',location])
 	if not all(item is False for item in list_of_possible_words):
 		return max(list_of_possible_words)
 	else:

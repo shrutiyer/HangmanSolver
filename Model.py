@@ -50,6 +50,8 @@ class Model(object):
 
     def make_AI_move(self,move_info):
         """Given the move info (output from parse through), does the actual move making"""
+        #print 'making a word with this move info', move_info
+        #print self.turn_number
         score = move_info[0][0]
         word = move_info[0][1]
         direction = move_info[1]
@@ -59,9 +61,10 @@ class Model(object):
         pre = word[0]
         the_letter = word[1]
         post = word[2]
-        print 'pre', pre
-        print 'letter', the_letter 
-        print 'post', post
+        placed = pre + post
+        #print 'pre', pre
+        #print 'letter', the_letter 
+        #print 'post', post
 
         if direction == 'r': #if in a row
             for (index, letter) in enumerate(post):
@@ -73,6 +76,10 @@ class Model(object):
                 self.proposed_board[x,y+1+index] = LetterTile(letter, "letter_tiles/" + letter.upper() + ".png", 37, 37, x*40, (y+1+index) *40)
             for (index, letter) in enumerate(pre):
                 self.proposed_board[x,y-len(pre)+index] = LetterTile(letter, "letter_tiles/" + letter.upper() + ".png", 37, 37, x*40, (y-len(pre)+index) *40)
+        for played_letter in placed:
+            #print 'played letter', played_letter
+            self.current_player.inventory.delete_this(played_letter)
+        self.current_player.inventory.pick_letters(self)
         self.current_player.update_score(pre+the_letter+post)
         #self.board[(pygame.mouse.get_pos()[0])/40, (pygame.mouse.get_pos()[1])/40] = copy.copy(self.model.letter_chosen)
 
@@ -109,7 +116,7 @@ class Model(object):
                 return False
 
         if is_row:
-            print "is_row"
+            #print "is_row"
             if self.do_row_stuff():
                 if self.turn_number != 0 and len(self.proposed_word) <= len(self.current_player.inventory.placed_letters):
                     return False
@@ -118,7 +125,7 @@ class Model(object):
             else:
                 return False
         else:
-            print "is_column"
+            #print "is_column"
             if self.do_column_stuff():
                 if self.turn_number != 0 and len(self.proposed_word) <= len(self.current_player.inventory.placed_letters):
                     return False
@@ -226,9 +233,18 @@ class Model(object):
                     self.ai_check_column(x,y)
                     #print "spot x and y are ", x, y
                     self.players[0].open_spots[-1].append((x,y))
+                    if self.players[0].open_spots[-1][1][0] == 0 or self.players[0].open_spots[-1][1][1] == 0:
+                        #print "before found row", self.players[0].open_spots[-1][1]
+                        self.players[0].open_spots[-1][1] = [0,0]
+                        #print 'found a zero in row for', spot.letter, self.players[0].open_spots[-1][1]
+                    if self.players[0].open_spots[-1][2][0] == 0 or self.players[0].open_spots[-1][2][1] == 0:
+                        #print self.players[0].open_spots[-1][2]
+                        self.players[0].open_spots[-1][2] = [0,0]
+                        #print 'found a zero in column for', spot.letter, self.players[0].open_spots[-1][2]
                     if self.players[0].open_spots[-1][1] == [0,0] and self.players[0].open_spots[-1][2] == [0,0]:
                         del self.players[0].open_spots[-1]
-        print 'output of find_spots', self.players[0].open_spots
+
+        #print 'output of find_spots', self.players[0].open_spots
         return self.players[0].open_spots
 
     def ai_check_row(self, x, y):
@@ -238,7 +254,7 @@ class Model(object):
         """
         left_spots = 0
         right_spots = 0
-        while -1<x-(left_spots+1)<15:
+        while -1<x-(left_spots+1)<15 and y<14:
             #print "in first while loop"
             if self.board.item((x-(left_spots+1),y)) == None:
                 left_spots += 1
@@ -250,7 +266,7 @@ class Model(object):
             else:
                 left_spots -= 1
                 break
-        while x+(right_spots+1)<15:
+        while x+(right_spots+1)<15 and y<14:
             #print "in second while loop"
             if self.board.item((x+(right_spots+1),y)) == None:
                 right_spots += 1
@@ -268,7 +284,7 @@ class Model(object):
     def ai_check_column(self, x, y):
         up_spots = 0
         down_spots = 0
-        while -1<y-(up_spots+1):
+        while -1<y-(up_spots+1) and x<14:
             #print "in first column while loop"
             if self.board.item((x,y-(up_spots+1))) == None:
                 up_spots += 1
@@ -280,7 +296,7 @@ class Model(object):
             else:
                 up_spots -= 1
                 break
-        while y+(down_spots+1)<15:
+        while y+(down_spots+1)<15 and x<14:
             #print "in second column while loop"
             if self.board.item((x,y+(down_spots+1))) == None:
                 down_spots += 1
@@ -317,7 +333,7 @@ class Player(object):
 
     def update_score(self,word):
         word_list = [line.strip() for line in open("words.txt", 'r')]
-        print word
+        print word.upper()
         if word.lower() in word_list:
             for letter in word:
                 self.score += self.model.points[letter.upper()]
@@ -370,6 +386,20 @@ class Inventory(object):
         for i in range(self.count_tiles(model)):
             letter = self.model.bag_contents.pickTile()
             self.letters_inhand.append(LetterTile(letter, "letter_tiles/" + letter + ".png", 37, 37, 20, 640))
+        self.string = []
+        for letter in self.letters_inhand:
+            self.string.append(letter.letter)
+
+    def delete_this(self,letter):
+        #print 'the letter is', letter.upper()
+        #print 'inventory is', self.string
+        for (index,object) in enumerate(self.letters_inhand):
+            #print 'inventory letter', object.letter
+            if object.letter == letter.upper():
+                self.letters_inhand.pop(index)
+                #print self.string
+                #print 'thinks it deleted'
+                return 'deleted'
 
     def define_coordinates(self, model):
         index = 0
