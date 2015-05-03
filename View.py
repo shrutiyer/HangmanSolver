@@ -15,7 +15,14 @@ class PyGameWindowView(object):
             to use for rendering the view """
         self.model = model
         self.screen = screen
-        
+    
+    def print_current_info(self):
+        for player in self.model.players:
+            print "-----------------"
+            print player.name.upper()
+            print player.name + "'s score:", player.score
+            print player.name + "'s total time:", player.clock
+
     def draw_tile(self,tile,x,y):
         square = pygame.draw.rect(self.screen,pygame.Color(0,0,0),pygame.Rect(x,y,37,37))
         self.screen.blit(tile.image,square)
@@ -33,6 +40,11 @@ class PyGameWindowView(object):
             pygame.draw.rect(self.screen,
                              pygame.Color(block.color[0],block.color[1],block.color[2]),
                              pygame.Rect(block.x,block.y,block.width,block.height))
+        pygame.draw.rect(self.screen,
+                             pygame.Color(204,255,230),
+                             pygame.Rect(280,280,37,37))
+        square = pygame.draw.rect(self.screen,pygame.Color(0,0,0),pygame.Rect(280,280,37,37))
+        self.screen.blit(pygame.image.load('letter_tiles/middle_star.png'),square)
 
         for tile in self.model.current_player.inventory.letters_inhand:
             #draw each of the actual letters that are in hand

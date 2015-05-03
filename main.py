@@ -21,12 +21,12 @@ screen = pygame.display.set_mode(size)
 
 model = Model.Model()
 view = View.PyGameWindowView(model,screen)
-controller = Control.PyGameController(model)
+controller = Control.PyGameController(model,view)
 
-print 'Welcome to Scrabble Solver!'
-print 'You are player 1.'
+print 'Welcome to Scrabble Solver! You are player 1.'
 print 'Try to beat our two AIs, Richard and Nixon.'
-print """To select a letter, left click. 
+print """Instructions:
+To select a letter, left click. 
 To place the letter, right click.
 To finish your move, press the space bar. 
 If you can't find a move to make then press the space bar.

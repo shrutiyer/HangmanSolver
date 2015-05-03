@@ -10,6 +10,7 @@ import numpy as np
 import copy
 from tree import Tree,Node
 import aitree
+import time
 
 class Model(object):
     """ Encodes the game state """
@@ -37,6 +38,8 @@ class Model(object):
         self.players.append(Player1)
         Richard = Player(self, 'Richard')
         self.players.append(Richard)
+        Nixon = Player(self, 'Nixon')
+        self.players.append(Nixon)
         self.current_player = self.players[0]
 
         #Keeps track of point value for each letter
@@ -310,11 +313,6 @@ class Model(object):
                 break
         self.players[0].open_spots[-1].append([up_spots,down_spots])
 
-"""Brain Dump by Shruti (Need not read): Could possibly do multiple letters, return 
-a list of words and then crosscheck it with the proposed board to avoid writing over 
-the existing board. For cross-checking, add the chosen spot to a list with Nones and 
-letters already on the board"""
-
 class Block(object):
     """ Encodes the state of a block in the game """
     def __init__(self,color,height,width,x,y):
@@ -330,6 +328,7 @@ class Player(object):
         self.inventory = Inventory(self.model)
         self.name = name
         self.score = 0
+        self.clock = 0
 
     def update_score(self,word):
         word_list = [line.strip() for line in open("words.txt", 'r')]
@@ -339,6 +338,10 @@ class Player(object):
                 self.score += self.model.points[letter.upper()]
         else:
             print 'not in word list'
+
+    def increase_time(self, start, end):
+        delta = end-start
+        self.clock += delta
 
 class Artificial(object):
     def __init__(self,model,name):

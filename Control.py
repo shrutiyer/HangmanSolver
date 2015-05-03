@@ -9,11 +9,14 @@ import numpy as np
 import copy
 from tree import Tree, Node
 import aitree
+import ailist
+import View
 
 class PyGameController(object):
     """ Handles keyboard input"""
-    def __init__(self,model):
+    def __init__(self,model,view):
         self.model = model
+        self.view = view
         self.model.letter_chosen = None
         self.current_player = None
 
@@ -24,9 +27,37 @@ class PyGameController(object):
         if self.model.current_player.name == 'Richard':
             if event.type == MOUSEBUTTONDOWN:
                 if pygame.mouse.get_pressed()[0]:
+                    print "Richard is thinking..."
+                    tic = time.time()
                     #print "recognized a left click"
                     spots = self.model.find_spots()
                     move = aitree.parse_through_list(spots,self.model.current_player.inventory.string)
+                    if move:
+                        #print 'Richards move info', move
+                        self.model.make_AI_move(move)
+                        # # Here's where we will actually put the word down.
+                        self.model.current_player.inventory.pick_letters(self.model)
+                        self.model.board = self.model.proposed_board.copy()
+                    else:
+                        for i in range(6):
+                            self.model.bag_contents.put_back(self.model.current_player.inventory.letters_inhand[i].letter)
+                        del self.model.current_player.inventory.letters_inhand[:]
+                        self.model.current_player.inventory.pick_letters(self.model)
+                    #print self.model.current_player.inventory.string
+                    toc = time.time()
+                    self.model.current_player.increase_time(tic,toc)
+                    self.model.turn_number += 1
+                    self.view.print_current_info()
+        
+        elif self.model.current_player.name == 'Nixon':
+            if event.type == MOUSEBUTTONDOWN:
+                if pygame.mouse.get_pressed()[0]:
+                    print "Nixon is thinking..."
+                    tic = time.time()
+                    #print "recognized a left click"
+                    spots = self.model.find_spots()
+                    move = ailist.parse_through_list(spots,self.model.current_player.inventory.string)
+                    #print 'Nixons move info', move 
                     if move:
                         #print 'move info', move
                         self.model.make_AI_move(move)
@@ -39,8 +70,12 @@ class PyGameController(object):
                         del self.model.current_player.inventory.letters_inhand[:]
                         self.model.current_player.inventory.pick_letters(self.model)
                     #print self.model.current_player.inventory.string
+                    toc = time.time()
+                    self.model.current_player.increase_time(tic,toc)
                     self.model.turn_number += 1
-                    print self.model.current_player.name + "'s score:", self.model.current_player.score
+                    self.view.print_current_info()
+                    #print self.model.current_player.name + "'s score:", self.model.current_player.score
+                    #print self.model.current_player.name + "'s time:", self.model.current_player.clock
         else:
             if event.type != MOUSEBUTTONDOWN:
                 if event.type is pygame.KEYDOWN:
@@ -69,7 +104,8 @@ class PyGameController(object):
                             self.model.proposed_word = ''
 
                         self.model.current_player.inventory.placed_letters = []
-                        print self.model.current_player.name + "'s score:", self.model.current_player.score
+                        self.view.print_current_info()
+    
             elif event.type == MOUSEBUTTONDOWN:
                 if pygame.mouse.get_pressed()[0]: #left mouse button
                 #if left click -> Select this tile from inventory
