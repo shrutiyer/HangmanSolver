@@ -33,8 +33,8 @@ class Model(object):
 
         # Make the players
         self.players = []
-        Shruti = Player(self, 'Shruti')
-        self.players.append(Shruti)
+        Player1 = Player(self, 'Player 1')
+        self.players.append(Player1)
         Richard = Player(self, 'Richard')
         self.players.append(Richard)
         self.current_player = self.players[0]
@@ -365,8 +365,11 @@ class Bag(object):
         self.contents[letter] +=1
 
     def pickTile(self):
-        random_letter = random.choice(self.model.bag_contents.makeList())
-        self.contents[random_letter] -= 1
+        if sum(self.contents.values()) >0:
+            random_letter = random.choice(self.model.bag_contents.makeList())
+            self.contents[random_letter] -= 1
+        else:
+            exit()
         return random_letter
 
 class Inventory(object):
