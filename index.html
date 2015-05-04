@@ -31,14 +31,18 @@
 <div class="tabs">
     <ul class="tab-links">
         <li class="active"><a href="#tab1">Tab #1</a></li>
-        <li><a href="#tab2">Project Proposal</a></li>
-        <li><a href="#tab3">Design Review</a></li>
+        <li><a href="ProjectProposal">Project Proposal</a></li>
+        <li><a href="DesignReview">Design Review</a></li>
         <li><a href="#tab4">Code Review</a></li>
     </ul>
  
     <div class="tab-content">
         <div id="tab1" class="tab active">
-            <h1>Project Proposal</h1>
+
+        </div>
+ 
+        <div id="Project Proposal" class="tab">
+           <h1>Project Proposal</h1>
             <h2>
             <a id="the-big-idea" class="anchor" href="#the-big-idea" aria-hidden="true"><span class="octicon octicon-link"></span></a>The Big Idea:</h2>
             
@@ -89,13 +93,14 @@
             
             <p>Learn about code efficiency and how to improve the processing speed
             Tips and tools for creating algorithms</p>
+           
+            <h1>
+            <a id="project-proposal" class="anchor" href="#project-proposal" aria-hidden="true"><span class="octicon octicon-link"></span></a>Project Proposal</h1>
 
         </div>
  
         <div id="Design Review" class="tab">
-            <h1>
-            <a id="project-proposal" class="anchor" href="#project-proposal" aria-hidden="true"><span class="octicon octicon-link"></span></a>Project Proposal</h1>
-
+            <p>Design Review</p>
             <h1>
             <a id="preparation-and-framing" class="anchor" href="#preparation-and-framing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Preparation and Framing</h1>
             
@@ -181,55 +186,43 @@
             <li>We feel that in this design review the format that our team used was appropriate--specifically in not using the projector--but feel that in the code review projector/ computer use will be more appropriate.</li>
             </ul>
             
-            
-            
-            
-            
-            
-        </div>
+            </div>
  
-        <div id="tab3" class="tab">
-            <p>Tab #3 content goes here!</p>
-            <p>Donec pulvinar neque sed semper lacinia. Curabitur lacinia ullamcorper nibh; quis imperdiet velit eleifend ac. Donec blandit mauris eget aliquet lacinia! Donec pulvinar massa interdum ri.</p>
-        </div>
- 
-        <div id="tab4" class="tab">
-            <p>Tab #4 content goes here!</p>
-            <p>Donec pulvinar neque sed semper lacinia. Curabitur lacinia ullamcorper nibh; quis imperdiet velit eleifend ac. Donec blandit mauris eget aliquet lacinia! Donec pulvinar massa interdum risus ornare mollis. In hac habitasse platea dictumst. Ut euismod tempus hendrerit. Morbi ut adipiscing nisi. Etiam rutrum sodales gravida! Aliquam tellus orci, iaculis vel.</p>
+        <div id="Code Review" class="tab">
+            <p>Code Review</p>
+            <h2>
+            <a id="code-review" class="anchor" href="#code-review" aria-hidden="true"><span class="octicon octicon-link"></span></a>Code Review</h2>
+            
+            <h2>
+            <a id="our-goals-for-this-discussion" class="anchor" href="#our-goals-for-this-discussion" aria-hidden="true"><span class="octicon octicon-link"></span></a>Our goals for this discussion:</h2>
+            
+            <p>We want to know if our code is ready for implementing algorithms, and if you guys have any advice on how to streamline our code so it’s easier to add AI’s into the program. We would also love to have some advice on life.</p>
+            
+            <h2>
+            <a id="background-and-context-1" class="anchor" href="#background-and-context-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Background and Context:</h2>
+            
+            <p>As we discussed before, we will be implementing artificial intelligence for the game of Scrabble. After the design review, our team talked about whether we want to focus on the speed of the algorithm or the high score. We decided that we want to focus on the speed. As of now, we have a model-view-controller setup. The Model includes classes for the Inventory, the Letter Tiles, the Bag of unused tiles, Players, and the board’s structure. The view contains the visual elements of the game, including drawing the board. Control takes inputs from three buttons of a mouse.</p>
+            
+            <h2>
+            <a id="key-questions-1" class="anchor" href="#key-questions-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Key questions:</h2>
+            
+            <ul>
+            <li>What would be an effective strategy for improving the running speed of our code with regards to the inventory and tile draw?</li>
+            <li>Should score still be considered at all?</li>
+            <li>Is Model-View-Control a good way to structure the code for implementing AI?</li>
+            </ul>
+            
+            <h2>
+            <a id="agenda-of-the-technical-review" class="anchor" href="#agenda-of-the-technical-review" aria-hidden="true"><span class="octicon octicon-link"></span></a>Agenda of the technical review:</h2>
+            
+            <ul>
+            <li>We will first talk about the minor changes we made to the code and the design. </li>
+            <li>We then want our classmates to review our code structure. </li>
+            <li>We will end our discussion with how to implement the artificial intelligence in different ways.</li>
+            </ul>
         </div>
     </div>
 </div>
-
-<h2>
-<a id="code-review" class="anchor" href="#code-review" aria-hidden="true"><span class="octicon octicon-link"></span></a>Code Review</h2>
-
-<h2>
-<a id="our-goals-for-this-discussion" class="anchor" href="#our-goals-for-this-discussion" aria-hidden="true"><span class="octicon octicon-link"></span></a>Our goals for this discussion:</h2>
-
-<p>We want to know if our code is ready for implementing algorithms, and if you guys have any advice on how to streamline our code so it’s easier to add AI’s into the program. We would also love to have some advice on life.</p>
-
-<h2>
-<a id="background-and-context-1" class="anchor" href="#background-and-context-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Background and Context:</h2>
-
-<p>As we discussed before, we will be implementing artificial intelligence for the game of Scrabble. After the design review, our team talked about whether we want to focus on the speed of the algorithm or the high score. We decided that we want to focus on the speed. As of now, we have a model-view-controller setup. The Model includes classes for the Inventory, the Letter Tiles, the Bag of unused tiles, Players, and the board’s structure. The view contains the visual elements of the game, including drawing the board. Control takes inputs from three buttons of a mouse.</p>
-
-<h2>
-<a id="key-questions-1" class="anchor" href="#key-questions-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Key questions:</h2>
-
-<ul>
-<li>What would be an effective strategy for improving the running speed of our code with regards to the inventory and tile draw?</li>
-<li>Should score still be considered at all?</li>
-<li>Is Model-View-Control a good way to structure the code for implementing AI?</li>
-</ul>
-
-<h2>
-<a id="agenda-of-the-technical-review" class="anchor" href="#agenda-of-the-technical-review" aria-hidden="true"><span class="octicon octicon-link"></span></a>Agenda of the technical review:</h2>
-
-<ul>
-<li>We will first talk about the minor changes we made to the code and the design. </li>
-<li>We then want our classmates to review our code structure. </li>
-<li>We will end our discussion with how to implement the artificial intelligence in different ways.</li>
-</ul>
 
       <footer class="site-footer">
         <span class="site-footer-owner"><a href="https://github.com/shrutiyer/ScrabbleAIs">Project Scrabbalicious</a> is maintained by <a href="https://github.com/shrutiyer">Shruti Iyer</a>, <a href="https://github.com/meghanrosetighe">Meghan Tighe</a> and <a href="https://github.com/krusellp">Paul Krusell</a>.</span>
