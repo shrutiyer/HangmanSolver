@@ -20,26 +20,29 @@
 
     <section class="main-content">
       <h1>
+        
+<a id="scrabbleais" class="anchor" href="#scrabbleais" aria-hidden="true"><span class="octicon octicon-link"></span></a><strong>ScrabbleAIs</strong>
+</h1>
+
+<p><em>A project by Shruti Iyer, Meghan Tighe and Paul Krusell</em></p>
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/7rrbpIJJBnI" frameborder="0" allowfullscreen></iframe>
 
 <div class="tabs">
     <ul class="tab-links">
         <li class="active"><a href="#tab1">Tab #1</a></li>
-        <li><a href="#tab2">Tab #2</a></li>
-        <li><a href="#tab3">Tab #3</a></li>
-        <li><a href="#tab4">Tab #4</a></li>
+        <li><a href="#tab2">Project Proposal</a></li>
+        <li><a href="#tab3">Design Review</a></li>
+        <li><a href="#tab4">Code Review</a></li>
     </ul>
  
     <div class="tab-content">
         <div id="tab1" class="tab active">
-            <p>Tab #1 content doesn't go here!</p>
+            <h1>Project Proposal</h1>
             <h2>
             <a id="the-big-idea" class="anchor" href="#the-big-idea" aria-hidden="true"><span class="octicon octicon-link"></span></a>The Big Idea:</h2>
             
             <p>The big idea is to create a scrabble game and then create multiple AIs to play each other and determine which one is better. We are thinking of making one AI that plans its moves ahead of time and one that impulsively just chooses the maximum points available at the time.</p>
-            
-            <img src="/letter_tiles/A.png">
-            
-            <iframe width="560" height="315" src="https://www.youtube.com/embed/7rrbpIJJBnI" frameborder="0" allowfullscreen></iframe>
             
             <h2>
             <a id="learning-goals" class="anchor" href="#learning-goals" aria-hidden="true"><span class="octicon octicon-link"></span></a>Learning Goals:</h2>
@@ -89,11 +92,100 @@
 
         </div>
  
-        <div id="Project Proposal" class="tab">
+        <div id="Design Review" class="tab">
             <h1>
             <a id="project-proposal" class="anchor" href="#project-proposal" aria-hidden="true"><span class="octicon octicon-link"></span></a>Project Proposal</h1>
 
-            <p>Donec pulvinar neque sed semper lacinia. Curabitur lacinia ullamcorper nibh; quis imperdiet velit eleifend ac. Donec blandit mauris eget aliquet lacinia! Donec pulvinar massa interdum risus ornare mollis. In hac habitasse platea dictumst. Ut euismod tempus hendrerit. Morbi ut adipiscing nisi. Etiam rutrum sodales gravida! Aliquam tellus orci, iaculis vel.</p>
+            <h1>
+            <a id="preparation-and-framing" class="anchor" href="#preparation-and-framing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Preparation and Framing</h1>
+            
+            <h2>
+            <a id="background-and-context" class="anchor" href="#background-and-context" aria-hidden="true"><span class="octicon octicon-link"></span></a>Background and context</h2>
+            
+            <p>Our project consists of a Scrabble solver AI.
+            The game has two different algorithms play against each other. There will also be an option to have the user play against the two algorithms. </p>
+            
+            <h2>
+            <a id="key-questions" class="anchor" href="#key-questions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Key questions</h2>
+            
+            <ul>
+            <li>Do you have any advice about code architecture? (Is this the best way for us to structure things?)</li>
+            <li>Do we have appropriate use of classes?</li>
+            <li>How should we keep track of tile locations? (Matrix? List?)</li>
+            <li>Should we use two algorithms with equally good features? Or should one of them be reasonably better than the other? </li>
+            <li>Do you have any cool algorithm /strategy ideas that we haven’t discussed?</li>
+            </ul>
+            
+            <p><img src="https://www.dropbox.com/sc/0jar358jel9ibbe/AAC3EUtIz1lbdJYR_rNKQoULa" alt="UML Diagram"></p>
+            
+            <h2>
+            <a id="agenda-for-technical-review-session" class="anchor" href="#agenda-for-technical-review-session" aria-hidden="true"><span class="octicon octicon-link"></span></a>Agenda for technical review session</h2>
+            
+            <ul>
+            <li>Discuss code overview/architecture</li>
+            <li>Discuss algorithms being used</li>
+            </ul>
+            
+            <h2>
+            <a id="algorithms" class="anchor" href="#algorithms" aria-hidden="true"><span class="octicon octicon-link"></span></a>Algorithms</h2>
+            
+            <ol>
+            <li>Permutations:
+            Find all places where words could be made
+            List all permutations with inventory letters
+            Check list for legal words
+            Play word with highest score</li>
+            <li>“Human way”:
+            Search a dictionary for all words that could be made with inventory letters plus any one other letter
+            See if the one letter is on board, if word can be placed there
+            Play word with highest score</li>
+            <li>Thinking ahead:
+            Does all the things that #1 does plus somehow thinks ahead.
+            Saves high score letters for double/triple point spots?
+            Doesn’t play U alone if also has Q in inventory?
+            Etc.</li>
+            <li>“Smart human way”:
+            Makes list of all letters on board that could have a letter added (spatially, not legally)
+            Cycles through list: each time makes new alphabetized list that includes inventory plus the letter from board
+            Searches all combinations of these letters as key in dictionary of all words, element in dictionary is the actual word
+            Play highest scoring legal word</li>
+            </ol>
+            
+            <h1>
+            <a id="design-review-reflection-and-synthesis" class="anchor" href="#design-review-reflection-and-synthesis" aria-hidden="true"><span class="octicon octicon-link"></span></a>Design Review Reflection and Synthesis</h1>
+            
+            <h2>
+            <a id="feedback-and-decisions" class="anchor" href="#feedback-and-decisions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Feedback and Decisions</h2>
+            
+            <ul>
+            <li>Due to feedback given to us, we decided to change Inventory from a class to an attribute of each Player.</li>
+            <li>A really important point was brought up that we were looking at different methods of implementing the same strategy.</li>
+            <li>From this, we discussed the pros and cons of two options. We have not reached a final conclusion as to which of these two routes we will be taking but have become aware of the options and are continuing research based on this feedback.<br>
+            
+            <ol>
+            <li>Creating algorithms that implement different strategies (simple highest point or looking into future, etc.) and seeing which performs better<br>
+            </li>
+            <li>Creating algorithms that implement the same basic strategy (simple highest point) in different ways and comparing their speed.</li>
+            </ol>
+            </li>
+            <li>A classmate suggested that we use a simple command line interface instead of using pygame. We appreciated this advice but still felt that the time that we were putting into making a decent interface was well worth the ease it would lead to when testing and debugging.</li>
+            </ul>
+            
+            <h2>
+            <a id="review-process-reflection" class="anchor" href="#review-process-reflection" aria-hidden="true"><span class="octicon octicon-link"></span></a>Review Process Reflection</h2>
+            
+            <ul>
+            <li>Our team stuck fairly well to our agenda. This was especially good because we think we did a good job in realizing what our key questions were.</li>
+            <li>Not only were our questions answered but we got some answers to questions we didn’t even realize we had (for example the speed vs. strategy concept mentioned above).</li>
+            <li>We feel that we made the right choice in not having our classmates look into the algorithms we were using too much because it was more useful to explain them during the review, both because it furthered our own understanding and because it allowed relevant questions to be presented in real time as the others learned about the algorithms. </li>
+            <li>We feel that in this design review the format that our team used was appropriate--specifically in not using the projector--but feel that in the code review projector/ computer use will be more appropriate.</li>
+            </ul>
+            
+            
+            
+            
+            
+            
         </div>
  
         <div id="tab3" class="tab">
@@ -107,154 +199,6 @@
         </div>
     </div>
 </div>
-
-<a id="scrabbleais" class="anchor" href="#scrabbleais" aria-hidden="true"><span class="octicon octicon-link"></span></a><strong>ScrabbleAIs</strong>
-</h1>
-
-<p><em>A project by Shruti Iyer, Meghan Tighe and Paul Krusell</em></p>
-
-<h1>
-<a id="project-proposal" class="anchor" href="#project-proposal" aria-hidden="true"><span class="octicon octicon-link"></span></a>Project Proposal</h1>
-
-<h2>
-<a id="the-big-idea" class="anchor" href="#the-big-idea" aria-hidden="true"><span class="octicon octicon-link"></span></a>The Big Idea:</h2>
-
-<p>The big idea is to create a scrabble game and then create multiple AIs to play each other and determine which one is better. We are thinking of making one AI that plans its moves ahead of time and one that impulsively just chooses the maximum points available at the time.</p>
-
-<img src="/letter_tiles/A.png">
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/7rrbpIJJBnI" frameborder="0" allowfullscreen></iframe>
-
-<h2>
-<a id="learning-goals" class="anchor" href="#learning-goals" aria-hidden="true"><span class="octicon octicon-link"></span></a>Learning Goals:</h2>
-
-<ul>
-<li>Paul: I want to learn about more efficient data structures that will allow our team to process huge numbers of words relatively quickly and efficiently. I think that this will be an important skill for this project and for many projects to come. I especially would love to get a better understanding of algorithms for solving puzzles like this.</li>
-<li>Meghan: I would like to learn more about how to better structure my code and how to code with a team (including better use of Github). I also really like the idea of creating an algorithm that solves a problem. Although this project is specific to solving a game of hangman, I think algorithm building is a skill that would be applicable to many other projects.</li>
-<li>Shruti: I would like to learn about the architecture of code and how it affects the efficiency and understanding of the code. I would also like to understand how to approach a new library and parse its syntax.</li>
-</ul>
-
-<h2>
-<a id="implementation-plan" class="anchor" href="#implementation-plan" aria-hidden="true"><span class="octicon octicon-link"></span></a>Implementation Plan:</h2>
-
-<p>The goal is to create a Scrabble AI with a smaller dictionary of words (about the size of 1000 words). We then plan to make two AIs to solve and play scrabble in two different ways. Initially, we just want an ASCII output of the board with Scrabble alphabets. We will build and test one working algorithm and then move to the second one. </p>
-
-<h2>
-<a id="project-schedule" class="anchor" href="#project-schedule" aria-hidden="true"><span class="octicon octicon-link"></span></a>Project Schedule:</h2>
-
-<ul>
-<li>Design Review (4/2):
-Have a completed, detailed overview of the code architecture
-Pseudocode for the algorithms we will be trying </li>
-<li>Code Review (4/13):
-Working game
-At least one rough but functioning algorithmz</li>
-<li>Mid-Project Presentation (4/23):
-Two fully functioning algorithms</li>
-<li>Final Product (5/6):
-Make presentation look pretty.(GUI/Interactive visual interface?)</li>
-</ul>
-
-<h2>
-<a id="collaboration-plan" class="anchor" href="#collaboration-plan" aria-hidden="true"><span class="octicon octicon-link"></span></a>Collaboration Plan:</h2>
-
-<p>We plan to start out together, pair programming until we have a clear idea about the code architecture and then branch out. We will individually read up on documentation and then get together to pair program. Initially, there won’t be individual parts to work on until we get to the display/GUI portion of the project. </p>
-
-<h2>
-<a id="risks" class="anchor" href="#risks" aria-hidden="true"><span class="octicon octicon-link"></span></a>Risks:</h2>
-
-<p>It might end up taking a long time to run because our program will have to cycle through such a long list of words. We are trying to combat this risk by first starting with a more limited pool of words. We could also have some risks defining the board and the rules of the game because they may not translate well into code. Also, we may have trouble finding a way to make everything modular, making it difficult to put different AIs simply into the program.</p>
-
-<h2>
-<a id="additional-course-content" class="anchor" href="#additional-course-content" aria-hidden="true"><span class="octicon octicon-link"></span></a>Additional Course Content:</h2>
-
-<p>Learn about code efficiency and how to improve the processing speed
-Tips and tools for creating algorithms</p>
-
-<h1>
-<a id="preparation-and-framing" class="anchor" href="#preparation-and-framing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Preparation and Framing</h1>
-
-<h2>
-<a id="background-and-context" class="anchor" href="#background-and-context" aria-hidden="true"><span class="octicon octicon-link"></span></a>Background and context</h2>
-
-<p>Our project consists of a Scrabble solver AI.
-The game has two different algorithms play against each other. There will also be an option to have the user play against the two algorithms. </p>
-
-<h2>
-<a id="key-questions" class="anchor" href="#key-questions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Key questions</h2>
-
-<ul>
-<li>Do you have any advice about code architecture? (Is this the best way for us to structure things?)</li>
-<li>Do we have appropriate use of classes?</li>
-<li>How should we keep track of tile locations? (Matrix? List?)</li>
-<li>Should we use two algorithms with equally good features? Or should one of them be reasonably better than the other? </li>
-<li>Do you have any cool algorithm /strategy ideas that we haven’t discussed?</li>
-</ul>
-
-<p><img src="https://www.dropbox.com/sc/0jar358jel9ibbe/AAC3EUtIz1lbdJYR_rNKQoULa" alt="UML Diagram"></p>
-
-<h2>
-<a id="agenda-for-technical-review-session" class="anchor" href="#agenda-for-technical-review-session" aria-hidden="true"><span class="octicon octicon-link"></span></a>Agenda for technical review session</h2>
-
-<ul>
-<li>Discuss code overview/architecture</li>
-<li>Discuss algorithms being used</li>
-</ul>
-
-<h2>
-<a id="algorithms" class="anchor" href="#algorithms" aria-hidden="true"><span class="octicon octicon-link"></span></a>Algorithms</h2>
-
-<ol>
-<li>Permutations:
-Find all places where words could be made
-List all permutations with inventory letters
-Check list for legal words
-Play word with highest score</li>
-<li>“Human way”:
-Search a dictionary for all words that could be made with inventory letters plus any one other letter
-See if the one letter is on board, if word can be placed there
-Play word with highest score</li>
-<li>Thinking ahead:
-Does all the things that #1 does plus somehow thinks ahead.
-Saves high score letters for double/triple point spots?
-Doesn’t play U alone if also has Q in inventory?
-Etc.</li>
-<li>“Smart human way”:
-Makes list of all letters on board that could have a letter added (spatially, not legally)
-Cycles through list: each time makes new alphabetized list that includes inventory plus the letter from board
-Searches all combinations of these letters as key in dictionary of all words, element in dictionary is the actual word
-Play highest scoring legal word</li>
-</ol>
-
-<h1>
-<a id="design-review-reflection-and-synthesis" class="anchor" href="#design-review-reflection-and-synthesis" aria-hidden="true"><span class="octicon octicon-link"></span></a>Design Review Reflection and Synthesis</h1>
-
-<h2>
-<a id="feedback-and-decisions" class="anchor" href="#feedback-and-decisions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Feedback and Decisions</h2>
-
-<ul>
-<li>Due to feedback given to us, we decided to change Inventory from a class to an attribute of each Player.</li>
-<li>A really important point was brought up that we were looking at different methods of implementing the same strategy.</li>
-<li>From this, we discussed the pros and cons of two options. We have not reached a final conclusion as to which of these two routes we will be taking but have become aware of the options and are continuing research based on this feedback.<br>
-
-<ol>
-<li>Creating algorithms that implement different strategies (simple highest point or looking into future, etc.) and seeing which performs better<br>
-</li>
-<li>Creating algorithms that implement the same basic strategy (simple highest point) in different ways and comparing their speed.</li>
-</ol>
-</li>
-<li>A classmate suggested that we use a simple command line interface instead of using pygame. We appreciated this advice but still felt that the time that we were putting into making a decent interface was well worth the ease it would lead to when testing and debugging.</li>
-</ul>
-
-<h2>
-<a id="review-process-reflection" class="anchor" href="#review-process-reflection" aria-hidden="true"><span class="octicon octicon-link"></span></a>Review Process Reflection</h2>
-
-<ul>
-<li>Our team stuck fairly well to our agenda. This was especially good because we think we did a good job in realizing what our key questions were.</li>
-<li>Not only were our questions answered but we got some answers to questions we didn’t even realize we had (for example the speed vs. strategy concept mentioned above).</li>
-<li>We feel that we made the right choice in not having our classmates look into the algorithms we were using too much because it was more useful to explain them during the review, both because it furthered our own understanding and because it allowed relevant questions to be presented in real time as the others learned about the algorithms. </li>
-<li>We feel that in this design review the format that our team used was appropriate--specifically in not using the projector--but feel that in the code review projector/ computer use will be more appropriate.</li>
-</ul>
 
 <h2>
 <a id="code-review" class="anchor" href="#code-review" aria-hidden="true"><span class="octicon octicon-link"></span></a>Code Review</h2>
