@@ -69,10 +69,34 @@
         <div id="Results" class="tab">
            <h1><u>Results</u></h1>
           <p><img src="http://i.imgur.com/CQDJtqq.png" alt="Turn 1"></p>
+          <p>After turn one, the scores of both Richard and Nixon (our Ais' names) are almost equal. But the times each of them took to find a word are 0.03 seconds and 15 seconds respectively. </p>
           <p><img src="http://i.imgur.com/OLEgUA6.png" alt="Turn 2"></p>
+          <p>Turn two. Fun Fact: Our best algorithm is named after the best Scrabble player <a href="http://fivethirtyeight.com/features/what-makes-nigel-richards-the-best-scrabble-player-on-earth/">Nigel Richards</a>.</p>
           <p><img src="http://i.imgur.com/fAb8pZQ.png" alt="Turn 3"></p>
+          <p>Turn three</p>
           <p><img src="http://i.imgur.com/c6ZWJBm.png" alt="Turn 4"></p>
-          <p><img src="http://i.imgur.com/lauUmmm.png" alt="Turn 5"></p>
+          <p>Over four turns, the total scores of Richard and Nixon are pretty close to each other. But the average times taken to compute each turn are 0.032 seconds and 8.187 seconds </p>
+          <p>The reason why Richard is so fast is the seaching algorithm. The word list is arranged in the form of a tree which cuts down the computation time incredibly. Here is what the tree looks like:</p>
+          <p><code>          *
+          |
+     +----+----+
+     |         |
+     A         B
+     |         |
+  +--+--+      E
+  |     |      |
+  P     S    +-+-+
+  |     |    |   |
+  P     K    A   E
+  |          |
++-+-+      +-+-+
+|   |      |   |
+E   L      D   N
+|   |
+A   E
+|
+L
+</code></p>
 
         </div>
            
