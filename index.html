@@ -78,23 +78,23 @@
           <p>Over four turns, the total scores of Richard and Nixon are pretty close to each other. But the average times taken to compute each turn are 0.032 seconds and 8.187 seconds </p>
           <p>The reason why Richard is so fast is the seaching algorithm. The word list is arranged in the form of a tree which cuts down the computation time incredibly. Here is what the tree looks like:</p>
 <p><code>          *<br>          |
-     +----+----+
-     |         |
-     A         B
-     |         |
-  +--+--+      E
-  |     |      |
-  P     S    +-+-+
-  |     |    |   |
-  P     K    A   E
-  |          |
-+-+-+      +-+-+
+     +----+----+----+----+
+     |         |         |
+     A         B         C
+     |         |         |
+  +--+--+      E      +--+--+
+  |     |      |      |     |
+  P     C    +-+-+    E     A
+  |     |    |   |    |     |
+  P     T    A   E    L     T
+  |          |        |
++-+-+      +-+-+      L
 |   |      |   |
-E   L      D   N
+E   A      T   N
+|   |      |   |
+A   L      L   S
 |   |
-A   E
-|
-L
+L   L
 </code></p>
 
         </div>
