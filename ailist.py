@@ -1,4 +1,4 @@
-"""dis be da ai fo da list, mon"""
+"""The AI for the list"""
 import sets
 from collections import Counter
 from time import time
@@ -21,7 +21,9 @@ points = {'A':1,'B':3,'C':3, 'D':2,
             'Y':4,'Z':10}
 
 def stepone(tile,inventory,word):
-	"""figures out if the word can be made given the letter and inventory"""
+	"""figures out if the word can be made given the letter and inventory
+		returns a boolean True if you can make the word and False if you cant
+		"""
 	letterstock = list(tile) + inventory
 	listed_word = list(word)
 	return not Counter(listed_word)-Counter(letterstock)
