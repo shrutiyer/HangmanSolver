@@ -64,7 +64,9 @@
             <li>If you can't find a move to make then press the space bar to pick new letters. </li>
             <li>When it's an AI's turn, you can left click to make them play their move. </li>
             </ol>
+            <a href="http://imgur.com/Q0fhS2C"><img src="http://i.imgur.com/Q0fhS2C.png" title="source: imgur.com" /></a>
             <a href="#top">TOP OF PAGE</a>
+          
         </div>
         
         <div id="Results" class="tab">
@@ -99,8 +101,8 @@ A   L      L   S
 |   |
 L   L
 </code></pre>
-<p>It has a branch for every letter. Each time Richard chooses a letter branch, the search cuts down because there are 25 branches that need not be searched. </p>
-<p>Whereas, the slower algorithm has to loop through a list of words.</p>
+<p>It has a branch for every letter. Each time Richard chooses a letter branch, the search cuts down because there are 25 branches that need not be searched. Hence, if the Scrabble palyer has A and C tile but no B, the algorithm will not enter the B branch. </p>
+<p>Whereas, the slower algorithm has to loop through a list of words. Unlike tree, the list algorithm goes through each of the word, not cutting down the list of words to be searched. That takes time and slows down the search process.</p>
 <a href="#top">TOP OF PAGE</a>
         </div>
            
