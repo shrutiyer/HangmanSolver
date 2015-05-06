@@ -1,4 +1,4 @@
-""" dis be our ai for tha tree, mon"""
+""" The AI for tree """
 import pickle
 from tree import Tree
 from tree import Node
